@@ -1,0 +1,301 @@
+@import "tailwindcss";
+
+/* Runtime theme variables (--t-*) are set on the root element from the active theme in src/config/themes. */
+/* Tailwind's default palettes are cleared so the only colours, fonts, radii and sizes that exist are the theme's own. */
+
+@theme inline {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+
+  --color-surface: var(--t-color-surface);
+  --color-surface-raised: var(--t-color-surface-raised);
+  --color-ink: var(--t-color-ink);
+  --color-ink-muted: var(--t-color-ink-muted);
+  --color-accent: var(--t-color-accent);
+  --color-accent-hover: var(--t-color-accent-hover);
+  --color-accent-press: var(--t-color-accent-press);
+  --color-accent-tint: var(--t-color-accent-tint);
+  --color-on-accent: var(--t-color-on-accent);
+  --color-secondary: var(--t-color-secondary);
+  --color-border: var(--t-color-border);
+  --color-border-strong: var(--t-color-border-strong);
+  --color-media-bg: var(--t-color-media-bg);
+  --color-shade: var(--t-color-shade);
+  --color-focus: var(--t-color-focus);
+  --color-selection-bg: var(--t-color-selection-bg);
+  --color-selection-ink: var(--t-color-selection-ink);
+
+  --font-display: var(--t-font-display);
+  --font-body: var(--t-font-body);
+
+  --radius-input: var(--t-radius-input);
+  --radius-card: var(--t-radius-card);
+  --radius-media: var(--t-radius-media);
+  --radius-button: var(--t-radius-button);
+
+  --spacing: var(--t-spacing-unit);
+  --spacing-gutter: var(--t-spacing-gutter);
+  --spacing-section: var(--t-spacing-section-y);
+  --container-page: var(--t-container);
+
+  --ease-brand: var(--t-ease);
+  --default-transition-duration: var(--t-duration-base);
+  --default-transition-timing-function: var(--t-ease);
+}
+
+/* Type roles: every text style on the site is one of these, valued from the active theme's type scale. */
+
+@utility type-display {
+  font-family: var(--t-type-display-family);
+  font-size: var(--t-type-display-size);
+  font-weight: var(--t-type-display-weight);
+  line-height: var(--t-type-display-leading);
+  letter-spacing: var(--t-type-display-tracking);
+  text-transform: var(--t-type-display-transform);
+}
+
+@utility type-h2 {
+  font-family: var(--t-type-h2-family);
+  font-size: var(--t-type-h2-size);
+  font-weight: var(--t-type-h2-weight);
+  line-height: var(--t-type-h2-leading);
+  letter-spacing: var(--t-type-h2-tracking);
+  text-transform: var(--t-type-h2-transform);
+}
+
+@utility type-h3 {
+  font-family: var(--t-type-h3-family);
+  font-size: var(--t-type-h3-size);
+  font-weight: var(--t-type-h3-weight);
+  line-height: var(--t-type-h3-leading);
+  letter-spacing: var(--t-type-h3-tracking);
+  text-transform: var(--t-type-h3-transform);
+}
+
+@utility type-lead {
+  font-family: var(--t-type-lead-family);
+  font-size: var(--t-type-lead-size);
+  font-weight: var(--t-type-lead-weight);
+  line-height: var(--t-type-lead-leading);
+  letter-spacing: var(--t-type-lead-tracking);
+  text-transform: var(--t-type-lead-transform);
+}
+
+@utility type-body {
+  font-family: var(--t-type-body-family);
+  font-size: var(--t-type-body-size);
+  font-weight: var(--t-type-body-weight);
+  line-height: var(--t-type-body-leading);
+  letter-spacing: var(--t-type-body-tracking);
+  text-transform: var(--t-type-body-transform);
+}
+
+@utility type-small {
+  font-family: var(--t-type-small-family);
+  font-size: var(--t-type-small-size);
+  font-weight: var(--t-type-small-weight);
+  line-height: var(--t-type-small-leading);
+  letter-spacing: var(--t-type-small-tracking);
+  text-transform: var(--t-type-small-transform);
+}
+
+@utility type-eyebrow {
+  font-family: var(--t-type-eyebrow-family);
+  font-size: var(--t-type-eyebrow-size);
+  font-weight: var(--t-type-eyebrow-weight);
+  line-height: var(--t-type-eyebrow-leading);
+  letter-spacing: var(--t-type-eyebrow-tracking);
+  text-transform: var(--t-type-eyebrow-transform);
+}
+
+@utility type-button {
+  font-family: var(--t-type-button-family);
+  font-size: var(--t-type-button-size);
+  font-weight: var(--t-type-button-weight);
+  line-height: var(--t-type-button-leading);
+  letter-spacing: var(--t-type-button-tracking);
+  text-transform: var(--t-type-button-transform);
+}
+
+/* Interactive ring: a flat outline that draws just outside the element on hover. */
+/* It is a hard box-shadow, so it reads as an outline and never as elevation. */
+@utility btn-ring {
+  box-shadow: 0 0 0 0 transparent;
+}
+
+@layer base {
+  /* Thin scrollbar in the theme's own colours. */
+  /* Firefox reads scrollbar-color, Chrome and Safari the webkit pseudo elements, both from the same tokens. */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--t-color-scrollbar-thumb) var(--t-color-scrollbar-track);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--t-color-scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--t-color-scrollbar-thumb);
+    border: 3px solid var(--t-color-scrollbar-track);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--t-color-scrollbar-thumb-hover);
+  }
+
+  ::selection {
+    background-color: var(--t-color-selection-bg);
+    color: var(--t-color-selection-ink);
+  }
+
+  body {
+    background-color: var(--t-color-surface);
+    color: var(--t-color-ink);
+    font-family: var(--t-type-body-family);
+    font-size: var(--t-type-body-size);
+    font-weight: var(--t-type-body-weight);
+    line-height: var(--t-type-body-leading);
+    letter-spacing: var(--t-type-body-tracking);
+  }
+
+  .btn-ring:hover {
+    box-shadow: 0 0 0 var(--t-ring-width) var(--t-color-accent-tint);
+  }
+
+  [data-on-dark] .btn-ring:hover,
+  .btn-ring-invert:hover {
+    box-shadow: 0 0 0 var(--t-ring-width) var(--t-color-surface-raised);
+  }
+
+  /* Designed focus ring; never removed without this replacement */
+  :focus-visible {
+    outline: 2px solid var(--t-color-focus);
+    outline-offset: 3px;
+  }
+
+  /* On dark plates the accent ring can vanish, so the ring flips to the light token */
+  [data-on-dark] :focus-visible {
+    outline-color: var(--t-color-on-accent);
+  }
+}
+
+/* Hero entrance: pure CSS so it runs before hydration, transform and opacity only, skipped under reduced motion. */
+/* The h1 stays static so the LCP element is never delayed. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-rise {
+    animation: hero-rise var(--t-duration-slow) var(--t-ease) both;
+  }
+
+  .hero-rise-late {
+    animation: hero-rise var(--t-duration-slow) var(--t-ease) both;
+    animation-delay: var(--t-duration-base);
+  }
+}
+
+/* Scroll-linked drift: hero content eases back as the page scrolls away. */
+/* CSS scroll-driven so it costs no JavaScript; browsers without support simply skip it. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes hero-drift {
+      to {
+        opacity: 0.35;
+        transform: translateY(48px);
+      }
+    }
+
+    .hero-drift {
+      animation: hero-drift linear both;
+      animation-timeline: scroll();
+      animation-range: 0px 520px;
+    }
+  }
+}
+
+/* Leaflet map styling. The library ships its own light chrome, so the pin, */
+/* popup and controls are re-pointed at theme tokens to match the rest of the page. */
+
+.branch-pin {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background-color: var(--t-color-accent);
+  border: 4px solid var(--t-color-surface-raised);
+  box-shadow: 0 0 0 1px var(--t-color-accent);
+}
+
+.leaflet-container {
+  background-color: var(--t-color-media-bg);
+  font-family: var(--t-type-body-family);
+  font-size: var(--t-type-small-size);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: var(--t-color-surface-raised);
+  color: var(--t-color-ink);
+  border-radius: var(--t-radius-input);
+  box-shadow: none;
+  border: 1px solid var(--t-color-border);
+}
+
+.leaflet-popup-content {
+  margin: 0.75rem 1rem;
+  line-height: var(--t-type-body-leading);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--t-color-ink-muted);
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background-color: var(--t-color-surface-raised);
+  color: var(--t-color-ink);
+  border-bottom-color: var(--t-color-border);
+}
+
+.leaflet-control-attribution {
+  background-color: var(--t-color-surface-raised);
+  color: var(--t-color-ink-muted);
+}
+
+.leaflet-control-attribution a {
+  color: var(--t-color-accent);
+}
+
+/* Oversized sign-off wordmark in the footer. It scales with the viewport so it */
+/* always spans the width, and is clipped by the footer rather than scrolling the page. */
+.footer-wordmark {
+  font-family: var(--t-font-display);
+  font-weight: 600;
+  /* sized so the full studio name spans the viewport without wrapping */
+  font-size: 9.1vw;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  text-align: center;
+  white-space: nowrap;
+  margin-bottom: -0.14em;
+}
