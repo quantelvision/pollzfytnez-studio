@@ -141,3 +141,15 @@ Backgrounds were rebalanced at the same time. Plans and the hours section were b
 - The mosaic pattern tiles exactly and does not use dense packing, because dense reorders tiles and the order is meaningful here.
 - The lightbox was built rather than taken from a package. It is around 150 lines, avoids another dependency, and takes the theme tokens directly, which a third party lightbox would have had to be fought into.
 - Logo sizing: all three placements were rendering at the same 95x36. The header logo only looked right once scrolled because the dark plate adds padding around it, giving the same image more visual weight. The unplated placements are now larger, 48px over the hero and 56px in the footer, which leaves the header height within three pixels between its two states so nothing jumps on scroll.
+
+## 2026-08-29: lightbox pass
+
+- Added a thumbnail strip so any item is one click away. Stepping through 43 items to reach the first one was the complaint, and it was a fair one.
+- Captions now come from Cloudinary contextual metadata: `title` shown over the media with `caption` beneath it. Nothing renders when the fields are empty, which replaced a generated line that read "Pollz Fytnez Studio, video from the studio" and said nothing.
+- Switching felt slow because each item was fetched only when it was reached. The two neighbours either side are now fetched ahead, and a spinner covers anything still decoding. Loaded items are remembered, so going back never flashes the spinner again.
+- Fixed a sizing bug found while testing: the media used a percentage max height, which cannot resolve without a definite height on every ancestor, so a portrait image rendered 1200 by 2133 inside a 900 pixel viewport. It is now bounded in viewport units and fits on both desktop and mobile.
+- Restored static rendering. The earlier fix for the cached 401 used `cache: "no-store"`, which silently made the whole home page render on every request. The lookup is cached again, and a rejected response is refreshed once rather than trusted, so it self heals without giving up the cache.
+
+### Verified
+
+Driven in a real browser at 1280 and 390 wide: 43 thumbnails, strip scrollable, direct jump to any item, media fits the viewport at both sizes, no horizontal overflow, and captions render over the media when the metadata is present.
