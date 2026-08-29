@@ -100,3 +100,16 @@ Nav gains section anchors and the mobile disclosure menu when these land. The 4-
 - Social icons use Simple Icons through react-icons, since Lucide 1.x dropped brand glyphs. Only profiles with a real url render, so nothing links to a guessed handle.
 - The chalk-smudge motif was removed from the trainer section, leaving five marks in use.
 - A placeholder address was added for the unisex branch so the map interaction can be tested. It is not real and is flagged in docs/business.md.
+
+## 2026-08-29: third review pass
+
+- Fixed the trainer portrait, which was 404ing. The image URL builder was appending a ".auto" extension, which Cloudinary does not accept. With f_auto the extension is left off entirely and the format is negotiated from the request headers. Video was unaffected because it uses a real extension.
+- The map was painting over the fixed header. Leaflet sets z-index up to 1000 on its own panes and controls, so the map container now creates its own stacking context with isolate, which keeps those values from competing with the header.
+- Removed the "Train with Banu" button from the trainer section and both contact buttons from the enquiry section, on the client's instruction. The contact intro copy was rewritten so it no longer points at buttons that are gone.
+- Hero trimmed: the locality eyebrow and the repeated closing time are gone. The closing time is already the right hand label on the opening-hours rule, so it was saying the same thing twice.
+- The why section was redesigned into two tiers. The coaching record is the strongest claim the studio has, so it leads at h2 size with a clay rule, and the other three sit quieter in a narrower column. It deliberately does not reuse the numbered roster shape from the programs section.
+- Footer socials expanded to seven platforms. Only WhatsApp is a real link; the rest are "#" placeholders that do not open a new tab. TODO in docs/business.md covers replacing them.
+
+### Known risk, not yet addressed
+
+OpenStreetMap's public tile servers are used directly. Their tile usage policy is not intended for commercial or high traffic sites, and heavy use can be throttled or blocked. Before launch, move to a tile provider with a plan, for example MapTiler, Mapbox or Stadia Maps, or self host. The change is one url in BranchMapClient.

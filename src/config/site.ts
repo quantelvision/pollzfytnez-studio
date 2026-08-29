@@ -37,13 +37,17 @@ export const site = {
   // line until one is set here.
   email: null as string | null,
 
-  // Only entries with a url are rendered, so nothing links to a guessed handle.
-  // TODO: add the studio's real profile links.
+  // Only WhatsApp is a real link. The rest are "#" placeholders so the row can
+  // be reviewed. TODO: replace every "#" with the studio's real profile URL
+  // before launch, or drop the platforms the studio does not use.
   socials: [
     { id: "whatsapp", label: "WhatsApp", url: "https://wa.me/917550002947" },
-    { id: "instagram", label: "Instagram", url: null as string | null },
-    { id: "facebook", label: "Facebook", url: null as string | null },
-    { id: "youtube", label: "YouTube", url: null as string | null },
+    { id: "instagram", label: "Instagram", url: "#" },
+    { id: "facebook", label: "Facebook", url: "#" },
+    { id: "youtube", label: "YouTube", url: "#" },
+    { id: "x", label: "X", url: "#" },
+    { id: "threads", label: "Threads", url: "#" },
+    { id: "googlemaps", label: "Google Maps", url: "#" },
   ],
   // the studio's real sales mechanism: every primary call to action goes here
   whatsappNumber: "917550002947",
