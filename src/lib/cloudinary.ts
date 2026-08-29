@@ -17,6 +17,9 @@ export interface CloudinaryAsset {
   // null when the asset carries no alt metadata in Cloudinary. Callers decide
   // whether to fall back to a readable name or treat the asset as decorative.
   alt: string | null;
+  // Contextual metadata the client sets in the Cloudinary console. Field names
+  // are documented in docs/media.md; description is accepted as a caption alias.
+  title: string | null;
   caption: string | null;
 }
 
@@ -78,7 +81,9 @@ interface SearchResource {
   width?: number;
   height?: number;
   duration?: number;
-  context?: { custom?: { alt?: string; caption?: string } };
+  context?: {
+    custom?: { alt?: string; title?: string; caption?: string; description?: string };
+  };
 }
 
 function toAsset(resource: SearchResource): CloudinaryAsset {
@@ -90,7 +95,8 @@ function toAsset(resource: SearchResource): CloudinaryAsset {
     height: resource.height ?? 0,
     duration: typeof resource.duration === "number" ? resource.duration : null,
     alt: custom.alt ?? null,
-    caption: custom.caption ?? null,
+    title: custom.title ?? null,
+    caption: custom.caption ?? custom.description ?? null,
   };
 }
 
@@ -105,18 +111,29 @@ async function search(expression: string, max: number, sortBy: object[]): Promis
     `${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}`,
   ).toString("base64");
 
+  const url = `https://api.cloudinary.com/v1_1/${cloudName()}/resources/search`;
+  const init = {
+    method: "POST",
+    headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      expression,
+      max_results: max,
+      with_field: ["context"],
+      sort_by: sortBy,
+    }),
+  };
+
   try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName()}/resources/search`, {
-      method: "POST",
-      headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        expression,
-        max_results: max,
-        with_field: ["context"],
-        sort_by: sortBy,
-      }),
-      cache: "no-store",
-    });
+    // Cached for an hour so the page stays statically rendered and a caption
+    // edited in Cloudinary appears without a deploy.
+    let res = await fetch(url, { ...init, next: { revalidate: 3600, tags: ["cloudinary"] } });
+
+    // A rejected response would otherwise sit in the cache for the full hour and
+    // keep serving placeholders after the credentials are fixed, so refresh the
+    // entry once instead of trusting the failure.
+    if (!res.ok) {
+      res = await fetch(url, { ...init, cache: "reload" });
+    }
 
     if (!res.ok) {
       console.warn(
