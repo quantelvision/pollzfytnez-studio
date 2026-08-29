@@ -30,14 +30,17 @@ function hasAdminCredentials(): boolean {
   );
 }
 
+// Cloudinary has no ".auto" extension. With f_auto the extension is left off
+// entirely and the best format is negotiated from the request headers.
 function buildUrl(
   resourceType: ResourceType,
   transformations: string[],
   publicId: string,
-  extension: string,
+  extension?: string,
 ): string {
   const encoded = publicId.split("/").map(encodeURIComponent).join("/");
-  return `https://res.cloudinary.com/${cloudName()}/${resourceType}/upload/${transformations.join(",")}/${encoded}.${extension}`;
+  const suffix = extension ? `.${extension}` : "";
+  return `https://res.cloudinary.com/${cloudName()}/${resourceType}/upload/${transformations.join(",")}/${encoded}${suffix}`;
 }
 
 export function imageUrl(publicId: string, width: number, height?: number): string {
@@ -45,7 +48,7 @@ export function imageUrl(publicId: string, width: number, height?: number): stri
   if (height) {
     transformations.push(`h_${height}`, "c_fill", "g_auto");
   }
-  return buildUrl("image", transformations, publicId, "auto");
+  return buildUrl("image", transformations, publicId);
 }
 
 // srcset across the widths a mid-range phone through a desktop actually needs

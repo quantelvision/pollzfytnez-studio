@@ -40,6 +40,7 @@ src/lib/cloudinary.ts fetches these through the Admin API with a one hour cache 
 - Posters are Cloudinary transformations of the video itself (getCldImageUrl with assetType "video"), never shipped image files. First paint is never an empty box.
 - Autoplay is not set as an HTML attribute. HeroVideoClient starts playback only when prefers-reduced-motion is not set; reduced-motion visitors get the poster.
 - Delivery goes through Cloudinary transformations: f_auto, q_auto, width capped at 1280 for the hero (the audience is mostly mid-range Android). Do not raise the cap without measuring.
+- Image URLs carry no file extension. With f_auto Cloudinary negotiates the format from the request headers, and a literal ".auto" extension returns a 404. Video keeps a real extension.
 - URLs are built by hand in src/lib/cloudinary.ts rather than through next-cloudinary. Its CldImage is a client component that uses hooks, which breaks server rendering, and Cloudinary already optimises the file so next/image would re-optimise it. Images render as a plain img with an explicit width, height and a Cloudinary srcset.
 
 ## Every media slot
