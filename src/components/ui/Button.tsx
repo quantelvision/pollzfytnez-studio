@@ -12,6 +12,7 @@ interface ButtonProps {
   type?: "button" | "submit";
   ariaLabel?: string;
   disabled?: boolean;
+  onClick?: () => void;
 }
 
 // No lift and no shadow on hover. The colour deepens and a flat ring draws
@@ -38,6 +39,7 @@ export function Button({
   type = "button",
   ariaLabel,
   disabled = false,
+  onClick,
 }: ButtonProps) {
   const classes = [base, variants[variant], className].filter(Boolean).join(" ");
 
@@ -55,7 +57,13 @@ export function Button({
   }
 
   return (
-    <button type={type} className={classes} aria-label={ariaLabel} disabled={disabled}>
+    <button
+      type={type}
+      className={classes}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

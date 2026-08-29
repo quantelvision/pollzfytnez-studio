@@ -5,6 +5,7 @@ import { Branches } from "@/components/sections/Branches";
 import { ClosingCta } from "@/components/sections/ClosingCta";
 import { Contact } from "@/components/sections/Contact";
 import { Faq } from "@/components/sections/Faq";
+import { Gallery } from "@/components/sections/Gallery";
 import { Hero } from "@/components/sections/Hero";
 import { HowToStart } from "@/components/sections/HowToStart";
 import { OpenHours } from "@/components/sections/OpenHours";
@@ -29,6 +30,7 @@ export function SitePage({ theme, previewLabel }: { theme: Theme; previewLabel?:
         <Programs />
         <WhyHere />
         <Trainer />
+        <Gallery />
         <HowToStart />
         <Plans />
         <OpenHours />

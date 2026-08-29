@@ -133,3 +133,11 @@ Getting started had drifted to near the bottom, after someone had already been a
 The reasoning: sell the room first, then lower the barrier by showing how little it takes to begin, and only then talk about money. The last step of How to start is "pick a plan when you are ready", so Plans following it is a direct handoff rather than a jump. Hours and branches are logistics and belong together after the decision, not before it.
 
 Backgrounds were rebalanced at the same time. Plans and the hours section were both on the green wash and adjacent, so they merged into one long band. The page now alternates surface, ink, surface, tint down its length, with only the branches and FAQ sections sharing the page surface, separated by a rule. Section order and the nav anchors were checked against the rendered document order after the change.
+
+## 2026-08-29: gallery and logo sizing
+
+- Added the gallery as a mosaic of the studio's own photos and clips, placed after the trainer section: you meet the coach, then you see the room, then you are told how to start. It sits on the page surface with a rule above it, since it is mostly media and reads as distinct from the trainer block above.
+- Ten tiles by default, set by GALLERY_PREVIEW_COUNT. The see-all control opens the lightbox at the first item past the preview rather than at the start, so it continues rather than repeating what was already on screen.
+- The mosaic pattern tiles exactly and does not use dense packing, because dense reorders tiles and the order is meaningful here.
+- The lightbox was built rather than taken from a package. It is around 150 lines, avoids another dependency, and takes the theme tokens directly, which a third party lightbox would have had to be fought into.
+- Logo sizing: all three placements were rendering at the same 95x36. The header logo only looked right once scrolled because the dark plate adds padding around it, giving the same image more visual weight. The unplated placements are now larger, 48px over the hero and 56px in the footer, which leaves the header height within three pixels between its two states so nothing jumps on scroll.
