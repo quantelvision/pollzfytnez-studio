@@ -36,7 +36,7 @@ export function Header({ logoSrc }: { logoSrc: string | null }) {
     >
       <div className="mx-auto flex max-w-page items-center justify-between gap-6 px-gutter py-3">
         <Link href="/" className="rounded-button" aria-label={`${site.name}, home`}>
-          <BrandLogo logoSrc={logoSrc} onDark={transparent} />
+          <BrandLogo logoSrc={logoSrc} onDark={transparent} size={transparent ? "md" : "sm"} />
         </Link>
 
         <nav aria-label="Primary" className="hidden lg:block">

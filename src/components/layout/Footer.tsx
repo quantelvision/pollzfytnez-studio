@@ -14,7 +14,7 @@ export function Footer({ logoSrc }: { logoSrc: string | null }) {
       <div className="mx-auto max-w-page px-gutter pt-20 pb-10">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <BrandLogo logoSrc={logoSrc} onDark />
+            <BrandLogo logoSrc={logoSrc} onDark size="lg" />
             <p className="mt-4 max-w-xs type-body text-surface/70">{site.tagline}</p>
           </div>
 
