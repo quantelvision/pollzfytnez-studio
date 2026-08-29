@@ -132,7 +132,7 @@ export function Branches() {
           })}
         </ul>
 
-        <div className="overflow-hidden rounded-media border border-border bg-media-bg lg:col-span-7">
+        <div className="relative isolate z-0 overflow-hidden rounded-media border border-border bg-media-bg lg:col-span-7">
           <div className="h-80 w-full lg:h-full lg:min-h-125">
             <BranchMapClient branches={mapped} center={center} activeId={activeId} />
           </div>
