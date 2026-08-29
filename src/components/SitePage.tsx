@@ -29,10 +29,10 @@ export function SitePage({ theme, previewLabel }: { theme: Theme; previewLabel?:
         <Programs />
         <WhyHere />
         <Trainer />
+        <HowToStart />
         <Plans />
         <OpenHours />
         <Branches />
-        <HowToStart />
         <Faq />
         <Contact />
         <ClosingCta />

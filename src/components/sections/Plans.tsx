@@ -15,7 +15,7 @@ export function Plans() {
   const offers = [site.offer.freeTrial, site.offer.noHiddenFees, site.offer.support];
 
   return (
-    <Section id="plans" className="bg-accent-tint">
+    <Section id="plans">
       <div className="max-w-2xl">
         <p className="type-eyebrow text-accent">Plans</p>
         <h2 className="mt-4 type-h2 text-ink">What it costs</h2>

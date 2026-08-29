@@ -69,7 +69,7 @@ export function Contact() {
   const messageError = errorFor("message");
 
   return (
-    <Section id="contact">
+    <Section id="contact" className="bg-accent-tint">
       <div className="lg:grid lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-5">
           <p className="type-eyebrow text-accent">Contact</p>

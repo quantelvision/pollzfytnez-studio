@@ -7,7 +7,7 @@ import { site } from "@/config/site";
 // end of the page rather than another full width block.
 export function Faq() {
   return (
-    <Section id="faq" innerClassName="max-w-3xl">
+    <Section id="faq" className="border-t border-border" innerClassName="max-w-3xl">
       <p className="type-eyebrow text-accent">Questions</p>
       <h2 className="mt-4 type-h2 text-ink">Questions we get asked</h2>
 

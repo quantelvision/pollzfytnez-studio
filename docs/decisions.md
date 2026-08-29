@@ -113,3 +113,23 @@ Nav gains section anchors and the mobile disclosure menu when these land. The 4-
 ### Known risk, not yet addressed
 
 OpenStreetMap's public tile servers are used directly. Their tile usage policy is not intended for commercial or high traffic sites, and heavy use can be throttled or blocked. Before launch, move to a tile provider with a plan, for example MapTiler, Mapbox or Stadia Maps, or self host. The change is one url in BranchMapClient.
+
+## 2026-08-29: section order
+
+Getting started had drifted to near the bottom, after someone had already been asked to think about price, hours and travel. The page now runs:
+
+1. Hero
+2. Programs, what the studio actually runs
+3. Why people keep training here, the case for it
+4. Trainer, who is coaching
+5. How to start, what happens if you get in touch
+6. Plans, what it costs
+7. We are open, when you can come
+8. Branches, where to go
+9. FAQ, the remaining doubts
+10. Contact
+11. Closing call to action
+
+The reasoning: sell the room first, then lower the barrier by showing how little it takes to begin, and only then talk about money. The last step of How to start is "pick a plan when you are ready", so Plans following it is a direct handoff rather than a jump. Hours and branches are logistics and belong together after the decision, not before it.
+
+Backgrounds were rebalanced at the same time. Plans and the hours section were both on the green wash and adjacent, so they merged into one long band. The page now alternates surface, ink, surface, tint down its length, with only the branches and FAQ sections sharing the page surface, separated by a rule. Section order and the nav anchors were checked against the rendered document order after the change.

@@ -6,7 +6,7 @@ import { site } from "@/config/site";
 // on narrow ones, so the sequence is carried by the line instead of by arrows.
 export function HowToStart() {
   return (
-    <Section id="start" className="border-t border-border">
+    <Section id="start" className="bg-accent-tint">
       <div className="max-w-2xl">
         <p className="type-eyebrow text-accent">Getting started</p>
         <h2 className="mt-4 type-h2 text-ink">How to start</h2>
@@ -19,11 +19,11 @@ export function HowToStart() {
               <>
                 <div
                   aria-hidden="true"
-                  className="absolute top-6 left-6 hidden h-0.5 w-full bg-border sm:block"
+                  className="absolute top-6 left-6 hidden h-0.5 w-full bg-border-strong sm:block"
                 />
                 <div
                   aria-hidden="true"
-                  className="absolute top-12 left-6 h-full w-0.5 bg-border sm:hidden"
+                  className="absolute top-12 left-6 h-full w-0.5 bg-border-strong sm:hidden"
                 />
               </>
             ) : null}
