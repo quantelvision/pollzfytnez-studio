@@ -32,8 +32,7 @@ export function Hero({ theme }: { theme: Theme }) {
         <div className="mx-auto w-full max-w-page px-gutter pt-32 pb-12 sm:pb-16">
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <p className="type-eyebrow text-surface/85">Kolathur, Chennai</p>
-              <h1 className="mt-4 type-display text-surface">
+              <h1 className="type-display text-surface">
                 Train like a{" "}
                 <span className="relative inline-block">
                   Star

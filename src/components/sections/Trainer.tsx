@@ -1,8 +1,6 @@
 import { CldPicture } from "@/components/media/CldPicture";
 import { getFirstFolderAsset } from "@/lib/cloudinary";
 import { Section } from "@/components/ui/Section";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { whatsappMessages } from "@/lib/whatsapp";
 import { site } from "@/config/site";
 
 // Asymmetric: portrait takes the narrower column, the record carries the width.
@@ -44,10 +42,6 @@ export async function Trainer() {
             </li>
           ))}
         </ul>
-
-        <div className="mt-8">
-          <WhatsAppButton message={whatsappMessages.trainer}>Train with Banu</WhatsAppButton>
-        </div>
       </div>
     </Section>
   );

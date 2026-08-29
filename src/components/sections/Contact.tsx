@@ -1,15 +1,12 @@
 "use client";
 
-import { Phone } from "lucide-react";
 import { useActionState, useId, useState } from "react";
 import { submitEnquiry } from "@/app/actions/contact";
 import { initialContactState, type ContactState } from "@/app/actions/contact-state";
 import { Select } from "@/components/ui/Select";
 import { Section } from "@/components/ui/Section";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { site } from "@/config/site";
 import { validateEnquiry, type EnquiryFields } from "@/lib/contact-validation";
-import { whatsappMessages } from "@/lib/whatsapp";
 
 const EMPTY: EnquiryFields = { name: "", phone: "", email: "", program: "", message: "" };
 
@@ -78,23 +75,9 @@ export function Contact() {
           <p className="type-eyebrow text-accent">Contact</p>
           <h2 className="mt-4 type-h2 text-ink">Ask us anything</h2>
           <p className="mt-6 max-w-sm type-body text-ink-muted">
-            The quickest reply is on WhatsApp. If you would rather write, leave your details and we
-            will call you back.
+            Leave your details and we will get back to you. Tell us which branch suits you and what
+            you are training for.
           </p>
-
-          <div className="mt-8 flex flex-col items-start gap-3">
-            <WhatsAppButton message={whatsappMessages.general} />
-            {site.phones.map((phone) => (
-              <a
-                key={phone.tel}
-                href={`tel:${phone.tel}`}
-                className="inline-flex items-center gap-2 rounded-button type-body text-accent transition-colors ease-brand hover:text-accent-hover"
-              >
-                <Phone aria-hidden="true" className="size-5" />
-                {phone.display}
-              </a>
-            ))}
-          </div>
         </div>
 
         <form action={action} noValidate className="mt-12 lg:col-span-7 lg:mt-0">
