@@ -21,7 +21,10 @@ export function ClosingCta() {
       <h2 className="type-h2 text-on-accent">
         <SplitWords text="Book your free trial day" />
       </h2>
-      <p className="reveal mx-auto mt-5 max-w-xl type-lead text-on-accent/85">
+            {/* Full opacity rather than softened: at 85 percent this is the pairing */}
+      {/* that fails contrast first on a saturated band, and it was capping how */}
+      {/* bright the accent could be. */}
+      <p className="reveal mx-auto mt-5 max-w-xl type-lead text-on-accent">
         Message us and tell us which branch suits you. We will find a slot and see you on the
         floor.
       </p>

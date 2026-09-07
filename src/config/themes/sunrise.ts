@@ -1,36 +1,37 @@
 import type { Theme } from "./types";
 import { openScale } from "./type-scales";
 
-// Draft variation, and the brightest registered. Orange takes every interactive role
+// The direction the client chose on 2026-09-01, and what the site ships.
+// The brightest orange the palette can carry: Orange takes every interactive role
 // and magenta marks results. The brightness lives in the surface, the tint and the bands:
 // the orange itself has to stay deep enough to be read as text and to carry white on a fill.
 export const sunrise: Theme = {
   id: "sunrise",
   name: "Sunrise",
-  status: "draft",
+  status: "locked",
   argument:
-    "The brightest of the set and the one the client asked for by name: a hot orange leads every action, magenta marks results, and the page itself warms to peach rather than cream.",
+    "The chosen direction. Orange leads every action, magenta marks results, and the page warms to peach rather than cream.",
   colors: {
-    surface: "#FFF7F0",
+    surface: "#FFF8F2",
     surfaceRaised: "#FFFFFF",
     ink: "#2A1A10",
     inkMuted: "#6B5344",
-    accent: "#B93509",
-    accentHover: "#9C2A06",
-    accentPress: "#822205",
-    accentTint: "#FFE4D1",
+    accent: "#C63C0A",
+    accentHover: "#AC3308",
+    accentPress: "#922B06",
+    accentTint: "#FFEDE0",
     onAccent: "#FFFFFF",
     secondary: "#B3125A",
-    border: "#F5E2D3",
-    borderStrong: "#DCBFA8",
-    mediaBg: "#FBEDE1",
+    border: "#F8E5D8",
+    borderStrong: "#E0C3AC",
+    mediaBg: "#FDF0E7",
     shade: "rgba(42, 26, 16, 0.68)",
-    focus: "#B93509",
-    selectionBg: "#FFD5B8",
-    selectionInk: "#872706",
+    focus: "#C63C0A",
+    selectionBg: "#FFDCC4",
+    selectionInk: "#922B06",
     scrollbarTrack: "transparent",
-    scrollbarThumb: "#B93509",
-    scrollbarThumbHover: "#872706",
+    scrollbarThumb: "#C63C0A",
+    scrollbarThumbHover: "#922B06",
   },
   fonts: { display: "baloo2", body: "mukta" },
   typeScale: openScale,

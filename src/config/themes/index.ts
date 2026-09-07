@@ -18,7 +18,7 @@ export const themes: Record<string, Theme> = {
 export const themeList: Theme[] = Object.values(themes);
 
 // The one value that decides which theme styles the whole site.
-export const activeThemeId = "home-ground";
+export const activeThemeId = "sunrise";
 
 export function getActiveTheme(): Theme {
   const theme = themes[activeThemeId];

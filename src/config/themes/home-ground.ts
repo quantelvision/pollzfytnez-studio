@@ -1,12 +1,13 @@
 import type { Theme } from "./types";
 import { openScale } from "./type-scales";
 
-// The locked direction chosen by the client. Green owns everything interactive,
+// The original direction, superseded by sunrise on 2026-09-01 when the client
+// rejected the palette. Kept registered so the two can still be compared. Green owns everything interactive,
 // clay is reserved for results: the price, the free-trial badge, a stat worth landing on.
 export const homeGround: Theme = {
   id: "home-ground",
   name: "Home Ground",
-  status: "locked",
+  status: "draft",
   argument:
     "Warm cream, leaf green for action, clay for results. Soft rounded shapes and open type so a mixed neighbourhood room feels welcome.",
   colors: {
