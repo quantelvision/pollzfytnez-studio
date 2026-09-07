@@ -43,3 +43,7 @@ next-env.d.ts
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Project notes. Kept on the developer's machine only, not published to the
+# remote. CLAUDE.md still points at them, so a fresh clone will not have them.
+/docs/
