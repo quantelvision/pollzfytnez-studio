@@ -30,6 +30,11 @@ export const metadata: Metadata = {
     title: `${site.name}, gym in Kolathur, Chennai`,
     description: site.description,
   },
+  // Search Console ownership. Spread conditionally so the build still needs no
+  // environment variables at all.
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export const viewport: Viewport = {

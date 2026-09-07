@@ -22,6 +22,9 @@ export function buildGymJsonLd() {
       telephone: site.phones.map((phone) => phone.tel),
       ...(site.email ? { email: site.email } : {}),
       image: `${site.url}/opengraph-image`,
+      // the studio's real profiles, which is how a search engine ties this
+      // record to the accounts it already knows about
+      sameAs: site.socials.map((social) => social.url),
       address: {
         "@type": "PostalAddress",
         streetAddress: address.street,
