@@ -4,16 +4,12 @@ import { Card } from "@/components/ui/Card";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { site } from "@/config/site";
 import type { Theme } from "@/config/themes/types";
-import { openStateAt, weekSchedule } from "@/lib/hours";
 import { whatsappMessages } from "@/lib/whatsapp";
-import { HeroOpenStatus } from "./HeroOpenStatus";
 
 // Full-bleed video hero. The footage keeps its natural colour; the theme's
 // scrim carries all of the darkening for text legibility.
 export function Hero({ theme }: { theme: Theme }) {
   const align = theme.hero.contentAlign === "bottom" ? "mt-auto" : "my-auto";
-  const schedule = weekSchedule();
-  const openState = openStateAt(new Date(), schedule);
 
   return (
     <section className="relative flex min-h-svh flex-col overflow-hidden bg-media-bg" data-on-dark="">
@@ -38,7 +34,7 @@ export function Hero({ theme }: { theme: Theme }) {
                   Star
                   <Motif
                     id="underline-stroke"
-                    className="absolute -bottom-3 left-0 w-full text-surface"
+                    className="hero-underline absolute -bottom-3 left-0 w-full text-accent"
                   />
                 </span>
               </h1>
@@ -46,11 +42,10 @@ export function Hero({ theme }: { theme: Theme }) {
                 Strength, conditioning and personal coaching on 100 Feet Road, led by a national
                 powerlifting medallist. Doors open at 5 AM.
               </p>
-              <div className="hero-rise mt-8 flex flex-wrap items-center gap-x-8 gap-y-5">
+              <div className="hero-rise mt-8">
                 <WhatsAppButton message={whatsappMessages.freeTrial}>
                   Book your free trial
                 </WhatsAppButton>
-                <HeroOpenStatus schedule={schedule} initial={openState} />
               </div>
             </div>
 
@@ -64,7 +59,7 @@ export function Hero({ theme }: { theme: Theme }) {
                     {site.stats.rating}
                     <Motif
                       id="ring-scribble"
-                      className="absolute top-1/2 left-1/2 h-[200%] w-[165%] -translate-x-1/2 -translate-y-1/2 text-secondary"
+                      className="hero-circle absolute top-1/2 left-1/2 h-[200%] w-[165%] -translate-x-1/2 -translate-y-1/2 text-secondary"
                     />
                   </span>{" "}
                   out of {site.stats.ratingOutOf} by members

@@ -1,39 +1,58 @@
 import { site } from "@/config/site";
 
-// LocalBusiness structured data for the branch whose address is confirmed.
-// The unisex branch is appended here once the client supplies its address,
-// and geo coordinates once the Google Maps pins arrive. See docs/business.md.
+// LocalBusiness structured data. The two branches keep different hours, so each
+// is emitted as its own ExerciseGym with its own opening hours rather than one
+// record speaking for both. A day a branch is shut is simply absent from its
+// specification, which is how schema.org expresses closure.
 export function buildGymJsonLd() {
-  const branch = site.branches.find((entry) => entry.address !== null);
-  if (!branch || !branch.address) {
+  const branches = site.branches.filter((entry) => entry.address !== null);
+  if (branches.length === 0) {
     return null;
   }
 
-  return {
-    "@context": "https://schema.org",
-    "@type": "ExerciseGym",
-    name: site.name,
-    slogan: site.tagline,
-    url: site.url,
-    telephone: site.phones.map((phone) => phone.tel),
-    image: `${site.url}/opengraph-image`,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: branch.address.street,
-      addressLocality: `${branch.address.locality}, ${branch.address.city}`,
-      addressRegion: branch.address.region,
-      postalCode: branch.address.postalCode,
-      addressCountry: branch.address.country,
-    },
-    openingHoursSpecification: site.hours.map((slot) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: slot.schemaDays,
-      opens: slot.opens24,
-      closes: slot.closes24,
-    })),
-    priceRange: `${site.pricing.annual.display} per year`,
-    currenciesAccepted: site.pricing.annual.currency,
-  };
+  const graph = branches.map((branch) => {
+    const address = branch.address!;
+    return {
+      "@type": "ExerciseGym",
+      "@id": `${site.url}#${branch.id}`,
+      // the branch names already carry the brand, so they are not prefixed
+      name: branch.name,
+      slogan: site.tagline,
+      url: site.url,
+      telephone: site.phones.map((phone) => phone.tel),
+      ...(site.email ? { email: site.email } : {}),
+      image: `${site.url}/opengraph-image`,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: address.street,
+        addressLocality: `${address.locality}, ${address.city}`,
+        addressRegion: address.region,
+        postalCode: address.postalCode,
+        addressCountry: address.country,
+      },
+      ...(branch.geo && !branch.geo.approximate
+        ? {
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: branch.geo.lat,
+              longitude: branch.geo.lng,
+            },
+          }
+        : {}),
+      openingHoursSpecification: branch.hours
+        .filter((slot) => !slot.closed)
+        .map((slot) => ({
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: slot.schemaDays,
+          opens: slot.closed ? undefined : slot.opens24,
+          closes: slot.closed ? undefined : slot.closes24,
+        })),
+      priceRange: `${site.pricing.lowest.display} to ${site.pricing.highest.display} per year`,
+      currenciesAccepted: site.pricing.currency,
+    };
+  });
+
+  return { "@context": "https://schema.org", "@graph": graph };
 }
 
 // FAQ structured data. Questions and answers come from the same source the

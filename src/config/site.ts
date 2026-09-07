@@ -1,6 +1,25 @@
 // Every business fact on the site lives here and only here.
 // Sources: the client brief and the screenshot of the previous site, confirmed 2026-08-27.
 
+// A day the branch opens, or a day it is shut. The two branches keep different
+// hours and the studio closes on Sunday, so closure is real data rather than an
+// absence, and nothing may read opens24 or closes24 without checking closed first.
+export type HoursSlot =
+  | {
+      label: string;
+      schemaDays: readonly string[];
+      closed?: false;
+      opens: string;
+      closes: string;
+      opens24: string;
+      closes24: string;
+    }
+  | {
+      label: string;
+      schemaDays: readonly string[];
+      closed: true;
+    };
+
 export interface Branch {
   id: string;
   name: string;
@@ -14,6 +33,8 @@ export interface Branch {
     postalCode: string;
     country: string;
   } | null;
+  // Opening hours are per branch: the two do not keep the same week.
+  hours: readonly HoursSlot[];
   // Google Maps share link, pending from the client for both branches
   mapsUrl: string | null;
   // Map pin. approximate is true while only the locality is known, which the
@@ -27,35 +48,36 @@ export const site = {
   tagline: "Train like a Star",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://pollzfytnezstudio.in",
   description:
-    "Strength training, conditioning and personal coaching at Pollz Fytnez Studio in Kolathur, Chennai. Open Monday to Saturday from 5 AM. Message us on WhatsApp for a free trial day.",
+    "Strength training, conditioning and personal coaching at Pollz Fytnez Studio in Kolathur, Chennai. Two branches, both open from 5 AM Monday to Saturday. Message us on WhatsApp for a free trial day.",
 
   phones: [
     { display: "+91 75500 02947", tel: "+917550002947" },
     { display: "+91 75500 02957", tel: "+917550002957" },
   ],
-  // TODO: no public email address has been confirmed. The footer hides the
-  // line until one is set here.
-  email: null as string | null,
+  // Confirmed by the client on 2026-09-01. Note this is the address shown on
+  // the site; where the contact form delivers is CONTACT_TO_EMAIL in the
+  // environment, which has to be set separately.
+  email: "pollzfytnez@gmail.com" as string | null,
 
-  // Only WhatsApp is a real link. The rest are "#" placeholders so the row can
-  // be reviewed. TODO: replace every "#" with the studio's real profile URL
-  // before launch, or drop the platforms the studio does not use.
+  // The three platforms the studio uses. All confirmed and real as of 2026-09-01.
   socials: [
     { id: "whatsapp", label: "WhatsApp", url: "https://wa.me/917550002947" },
-    { id: "instagram", label: "Instagram", url: "#" },
-    { id: "facebook", label: "Facebook", url: "#" },
-    { id: "youtube", label: "YouTube", url: "#" },
-    { id: "x", label: "X", url: "#" },
-    { id: "threads", label: "Threads", url: "#" },
-    { id: "googlemaps", label: "Google Maps", url: "#" },
+    { id: "instagram", label: "Instagram", url: "https://www.instagram.com/pollzfytnez/" },
+    {
+      id: "facebook",
+      label: "Facebook",
+      url: "https://www.facebook.com/people/Pollz-Fytnez/61590209579189/",
+    },
   ],
   // the studio's real sales mechanism: every primary call to action goes here
   whatsappNumber: "917550002947",
 
+  // Names, addresses and hours confirmed by the client on 2026-09-01. The two
+  // branches do not keep the same week, so hours belong to the branch.
   branches: [
     {
-      id: "kolathur-womens",
-      name: "Women's studio",
+      id: "pollzfytnez-studio",
+      name: "Pollzfytnez Studio",
       kind: "women-only",
       address: {
         street: "8A, Sivananda Nagar, 100 Feet Road",
@@ -65,50 +87,63 @@ export const site = {
         postalCode: "600099",
         country: "IN",
       },
+      hours: [
+        {
+          label: "Monday to Saturday",
+          schemaDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          closed: false,
+          opens: "5:00 AM",
+          closes: "9:30 PM",
+          opens24: "05:00",
+          closes24: "21:30",
+        },
+        { label: "Sunday", schemaDays: ["Sunday"], closed: true },
+      ],
       mapsUrl: null,
       geo: { lat: 13.1241127, lng: 80.2046276, approximate: true },
     },
     {
-      id: "unisex-gym",
-      name: "Unisex gym",
+      id: "pollz-unisex-gym",
+      name: "Pollz Unisex Gym",
       kind: "unisex",
-      // PLACEHOLDER for testing the map only. Not a real address.
-      // TODO: replace with the real address before this site goes live.
       address: {
-        street: "12, Retteri Main Road",
+        street: "47, 1st Main Street, Thirumalai Nagar",
         locality: "Kolathur",
         city: "Chennai",
         region: "Tamil Nadu",
         postalCode: "600099",
         country: "IN",
       },
-      mapsUrl: null,
+      hours: [
+        {
+          label: "Monday to Saturday",
+          schemaDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          closed: false,
+          opens: "5:00 AM",
+          closes: "10:00 PM",
+          opens24: "05:00",
+          closes24: "22:00",
+        },
+        {
+          label: "Sunday",
+          schemaDays: ["Sunday"],
+          closed: false,
+          opens: "6:00 AM",
+          closes: "1:00 PM",
+          opens24: "06:00",
+          closes24: "13:00",
+        },
+      ],
+      // TODO: the address is real but this pin is not. It is the Kolathur
+      // locality, flagged as approximate in the UI, until the client supplies
+      // the Google Maps share link. See docs/business.md.
       geo: { lat: 13.1183, lng: 80.2149, approximate: true },
+      mapsUrl: null,
     },
   ] satisfies Branch[],
 
-  // same hours at both branches, confirmed by the client
-  hours: [
-    {
-      label: "Monday to Saturday",
-      opens: "5:00 AM",
-      closes: "9:30 PM",
-      schemaDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      opens24: "05:00",
-      closes24: "21:30",
-    },
-    {
-      label: "Sunday",
-      opens: "6:00 AM",
-      closes: "1:00 PM",
-      schemaDays: ["Sunday"],
-      opens24: "06:00",
-      closes24: "13:00",
-    },
-  ],
-
   stats: {
-    membersTrained: "Over 500 members trained",
+    membersTrained: "Over 1,000 members trained",
     rating: "4.9",
     ratingOutOf: "5",
   },
@@ -191,35 +226,53 @@ export const site = {
     },
   ],
 
+  // The span of confirmed membership prices, used for structured data.
   pricing: {
-    annual: { amount: 9999, currency: "INR", display: "Rs 9,999" },
+    currency: "INR",
+    lowest: { amount: 8500, display: "Rs 8,500" },
+    highest: { amount: 16000, display: "Rs 16,000" },
   },
 
-  // Semi-annual and personal training are sold on enquiry; only the annual
-  // price is confirmed, so no other number appears anywhere on the site.
+  // Every membership is a twelve month term. Prices confirmed by the client on
+  // 2026-09-01, replacing the earlier annual and semi-annual pair.
   plans: {
     featured: {
-      id: "annual",
-      name: "Annual plan",
+      id: "first-fifty",
+      name: "Annual membership",
       term: "12 months",
       price: "Rs 9,999",
       cadence: "per year",
-      summary: "Full access to the studio and its programs for a year.",
+      // TODO: a launch offer, so it expires. Remove the badge and rename this
+      // plan once the first 50 memberships are taken. See docs/business.md.
+      badge: "Opening offer, first 50 members",
+      summary: "Full access to the floor and every program the studio runs, for a year.",
     },
     others: [
       {
-        id: "semi-annual",
-        name: "Semi-annual plan",
-        term: "6 months",
-        summary: "The same access on a six month term.",
+        id: "student",
+        name: "Student offer",
+        term: "12 months",
+        price: "Rs 8,500",
+        summary: "The same year of access, at a lower rate on a valid student ID.",
       },
       {
-        id: "personal-training",
-        name: "Personal training",
-        term: "Per plan",
-        summary: "One-on-one coaching with the plan and slots set around you.",
+        id: "couple",
+        name: "Couple offer",
+        term: "12 months",
+        price: "Rs 16,000",
+        summary: "Two annual memberships taken together, for the pair of you.",
       },
     ],
+    // Coaching rather than a membership, and the only thing priced by the
+    // month, so it is set apart from the three above rather than sold as a tier.
+    coaching: {
+      id: "powerlifting-coaching",
+      name: "Powerlifting coaching",
+      price: "Rs 1,000",
+      cadence: "per month",
+      summary:
+        "Coached squat, bench and deadlift with a national medallist, programmed month by month.",
+    },
   },
 
   offer: {
@@ -254,7 +307,7 @@ export const site = {
     },
     {
       q: "What are the opening hours?",
-      a: "Monday to Saturday from 5:00 AM to 9:30 PM, and Sunday from 6:00 AM to 1:00 PM. Both branches keep the same hours.",
+      a: "The two branches differ. Pollzfytnez Studio opens Monday to Saturday from 5:00 AM to 9:30 PM and is closed on Sunday. Pollz Unisex Gym opens Monday to Saturday from 5:00 AM to 10:00 PM, and Sunday from 6:00 AM to 1:00 PM.",
     },
     {
       q: "I have never trained in a gym before. Is that a problem?",
@@ -274,7 +327,7 @@ export const site = {
     },
     {
       q: "What does membership cost?",
-      a: "The annual plan is Rs 9,999. The semi-annual plan and personal training are priced on enquiry. There are no hidden fees on any plan.",
+      a: "An annual membership is Rs 9,999 for the first 50 members. There is a student rate of Rs 8,500 on a valid student ID, and a couple offer of Rs 16,000 for two. Powerlifting coaching is Rs 1,000 a month. There are no hidden fees on any of them.",
     },
   ],
 
@@ -282,9 +335,10 @@ export const site = {
     name: "Banu S.",
     role: "Head trainer",
     awards: [
-      "3rd place, National Powerlifting Championship 2023, Bengaluru",
-      "Five state golds, Coimbatore",
-      "3rd place, National Powerlifting Championship 2020, New Delhi",
+      "3rd in National PowerLifting Championship 2023 - Bengaluru",
+      "1st (5 Times Gold) in State PowerLifting Championship 2023 - Coimbatore",
+      "3rd in National PowerLifting Championship 2020 - New Delhi",
+      "Various Trophies and Awards for State and District level PowerLifting Championships",
     ],
   },
 

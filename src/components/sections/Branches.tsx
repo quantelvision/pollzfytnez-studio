@@ -2,7 +2,7 @@
 
 import { MapPin, Navigation } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { MappedBranch } from "@/components/map/branch-map-types";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
@@ -39,28 +39,38 @@ export function Branches() {
     }));
 
   const [activeId, setActiveId] = useState<string | null>(mapped[0]?.id ?? null);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  // On a phone the map sits below the cards, so picking a branch moved
+  // something the visitor could not see and read as nothing happening. Bringing
+  // the map into view makes the change the answer to the press. On a wide
+  // screen the map is already beside the cards, and "nearest" scrolls nothing.
+  const showOnMap = (id: string) => {
+    setActiveId(id);
+    mapRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
   const center: [number, number] = mapped.length
     ? [mapped[0].lat, mapped[0].lng]
     : [13.1241127, 80.2046276];
 
   return (
     <Section id="locations">
-      <div className="max-w-2xl">
-        <p className="type-eyebrow text-accent">Locations</p>
-        <h2 className="mt-4 type-h2 text-ink">We have two branches</h2>
-        <p className="mt-6 type-lead text-ink-muted">
-          A women-only studio and a unisex gym, both in Kolathur and both on the same hours. Pick a
-          branch to see it on the map.
+      <div className="stagger max-w-2xl">
+        <p className="reveal type-eyebrow text-accent">Locations</p>
+        <h2 className="reveal mt-4 type-h2 text-ink">We have two branches</h2>
+        <p className="reveal mt-6 type-lead text-ink-muted">
+          A women-only studio and a unisex gym, both in Kolathur. They do not keep the same hours,
+          so check the one you plan to train at. Pick a branch to see it on the map.
         </p>
       </div>
 
       <div className="mt-12 grid gap-6 lg:grid-cols-12">
-        <ul className="flex flex-col gap-4 lg:col-span-5">
+        <ul className="stagger flex flex-col gap-4 lg:col-span-5">
           {site.branches.map((branch) => {
             const isMappable = branch.geo !== null;
             const isActive = activeId === branch.id;
             return (
-              <li key={branch.id}>
+              <li key={branch.id} className="reveal">
                 <div
                   className={`rounded-card border p-6 transition-[border-color,background-color] ease-brand ${
                     isActive
@@ -81,6 +91,22 @@ export function Branches() {
                     />
                   </div>
 
+                  {/* The config already groups the week, so the card reads it */}
+                  {/* straight off rather than deriving runs of like days. */}
+                  <ul className="mt-4 border-y border-border py-3">
+                    {branch.hours.map((slot) => (
+                      <li
+                        key={slot.label}
+                        className="flex justify-between gap-4 py-1 type-small text-ink-muted"
+                      >
+                        <span>{slot.label}</span>
+                        <span className="text-ink">
+                          {slot.closed ? "Closed" : `${slot.opens} to ${slot.closes}`}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
                   {branch.address ? (
                     <address className="mt-4 type-body text-ink-muted not-italic">
                       {branch.address.street}
@@ -98,7 +124,7 @@ export function Branches() {
                     {isMappable ? (
                       <button
                         type="button"
-                        onClick={() => setActiveId(branch.id)}
+                        onClick={() => showOnMap(branch.id)}
                         aria-pressed={isActive}
                         className="btn-ring inline-flex items-center gap-2 rounded-button bg-accent px-5 py-2.5 type-button text-on-accent transition-[background-color,box-shadow,transform] ease-brand hover:bg-accent-hover active:scale-(--t-press-scale)"
                       >
@@ -132,7 +158,10 @@ export function Branches() {
           })}
         </ul>
 
-        <div className="relative isolate z-0 overflow-hidden rounded-media border border-border bg-media-bg lg:col-span-7">
+        <div
+          ref={mapRef}
+          className="relative isolate z-0 scroll-mt-24 overflow-hidden rounded-media border border-border bg-media-bg lg:col-span-7"
+        >
           <div className="h-80 w-full lg:h-full lg:min-h-125">
             <BranchMapClient branches={mapped} center={center} activeId={activeId} />
           </div>

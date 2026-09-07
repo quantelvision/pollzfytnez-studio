@@ -1,44 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { DaySchedule } from "@/lib/hours";
+import { openStateAt, type DaySchedule } from "@/lib/hours";
 
-// Live open or closed badge for the studio's own timezone, so a visitor abroad
-// still sees Chennai time. It renders nothing until after mount: the server has
-// no reliable clock for the viewer, and a guessed value would hydrate wrong.
+// Live open or closed badge for one branch, in the studio's own timezone, so a
+// visitor abroad still sees Chennai time. It renders nothing until after mount:
+// the server has no reliable clock for the viewer, and a guessed value would
+// hydrate wrong.
 export function OpenStatus({ schedule }: { schedule: DaySchedule[] }) {
   const [status, setStatus] = useState<{ open: boolean; label: string } | null>(null);
 
   useEffect(() => {
     const compute = () => {
-      const parts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Kolkata",
-        weekday: "long",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).formatToParts(new Date());
-
-      const weekday = parts.find((part) => part.type === "weekday")?.value ?? "";
-      const hour = Number(parts.find((part) => part.type === "hour")?.value ?? "0");
-      const minute = Number(parts.find((part) => part.type === "minute")?.value ?? "0");
-      const now = hour * 60 + minute;
-
-      const today = schedule.find((day) => day.day === weekday);
-      if (!today) {
-        setStatus(null);
-        return;
-      }
-
-      if (now >= today.openMinutes && now < today.closeMinutes) {
-        setStatus({ open: true, label: `Open now until ${today.closes}` });
-      } else if (now < today.openMinutes) {
-        setStatus({ open: false, label: `Opens at ${today.opens}` });
-      } else {
-        const index = schedule.findIndex((day) => day.day === weekday);
-        const next = schedule[(index + 1) % schedule.length];
-        setStatus({ open: false, label: `Closed, opens ${next.short} at ${next.opens}` });
-      }
+      const state = openStateAt(new Date(), schedule);
+      setStatus({
+        open: state.open,
+        label: state.open ? `Open now until ${state.closes}` : `Closed. ${state.detail}`,
+      });
     };
 
     compute();

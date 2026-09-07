@@ -11,10 +11,10 @@ export function whatsappLink(message: string): string {
 export const whatsappMessages = {
   freeTrial: "Hi, I would like to book my free trial day at Pollz Fytnez Studio.",
   general: "Hi, I have a question about training at Pollz Fytnez Studio.",
-  annualPlan: "Hi, I would like to know more about the annual plan at Pollz Fytnez Studio.",
-  semiAnnualPlan: "Hi, could you tell me the price of the semi-annual plan?",
-  personalTraining: "Hi, could you tell me the price of personal training?",
+  annualPlan: "Hi, I would like to know more about the annual membership at Pollz Fytnez Studio.",
   trainer: "Hi, I would like to train with Banu S. Could you tell me how to start?",
-  directions: (branch: string) => `Hi, could you send me the directions to the ${branch}?`,
+  // the branch names are proper nouns, so no article in front of them
+  directions: (branch: string) => `Hi, could you send me the directions to ${branch}?`,
+  plan: (plan: string) => `Hi, I would like to know more about the ${plan} at Pollz Fytnez Studio.`,
   program: (program: string) => `Hi, I am interested in ${program}. Could you tell me more?`,
 } as const;
