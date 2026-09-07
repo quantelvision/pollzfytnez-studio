@@ -18,7 +18,7 @@ import { findBrandLogo } from "@/lib/brand";
 
 // The real page composition, rendered by the home route and by every theme
 // preview so variations are judged on the actual site.
-export function SitePage({ theme, previewLabel }: { theme: Theme; previewLabel?: string }) {
+export function SitePage({ theme }: { theme: Theme }) {
   const logoSrc = findBrandLogo();
 
   return (
@@ -40,11 +40,6 @@ export function SitePage({ theme, previewLabel }: { theme: Theme; previewLabel?:
         <ClosingCta />
       </main>
       <Footer logoSrc={logoSrc} />
-      {previewLabel ? (
-        <p className="fixed bottom-4 left-4 z-50 rounded-button bg-ink px-4 py-2 type-small text-surface">
-          {previewLabel}
-        </p>
-      ) : null}
     </>
   );
 }

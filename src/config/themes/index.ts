@@ -1,12 +1,21 @@
+import { bougainvillea } from "./bougainvillea";
 import { homeGround } from "./home-ground";
-import { redEarth } from "./red-earth";
+import { marina } from "./marina";
+import { mulberry } from "./mulberry";
+import { sunrise } from "./sunrise";
 import type { Theme } from "./types";
 
 // Registry of every theme. Adding a variation: add its file, add one entry here.
 export const themes: Record<string, Theme> = {
   [homeGround.id]: homeGround,
-  [redEarth.id]: redEarth,
+  [sunrise.id]: sunrise,
+  [bougainvillea.id]: bougainvillea,
+  [marina.id]: marina,
+  [mulberry.id]: mulberry,
 };
+
+// Every registered theme, in the order the preview cycles through them.
+export const themeList: Theme[] = Object.values(themes);
 
 // The one value that decides which theme styles the whole site.
 export const activeThemeId = "home-ground";

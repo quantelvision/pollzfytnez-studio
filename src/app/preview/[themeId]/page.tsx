@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SitePage } from "@/components/SitePage";
-import { ThemeProvider } from "@/components/theme/ThemeContext";
-import { getTheme, themes, themeStyle } from "@/config/themes";
+import { ThemeCycler } from "@/components/theme/ThemeCycler";
+import { getTheme, themeList, themes } from "@/config/themes";
 
 // Renders the real site under any registered theme so variations can be shared
-// with the client as links. Not indexed and not in the sitemap.
+// with the client as links. Not indexed and not in the sitemap. Every variation
+// is reachable from any of these links by cycling, which is what the site is
+// shown from in a review.
 
 export const dynamicParams = false;
 
@@ -35,10 +37,8 @@ export default async function ThemePreviewPage({ params }: PageProps<"/preview/[
   }
 
   return (
-    <div style={themeStyle(theme)} className="min-h-svh bg-surface text-ink">
-      <ThemeProvider theme={theme}>
-        <SitePage theme={theme} previewLabel={`Theme preview: ${theme.name} (${theme.status})`} />
-      </ThemeProvider>
-    </div>
+    <ThemeCycler themes={themeList} initialId={theme.id}>
+      <SitePage theme={theme} />
+    </ThemeCycler>
   );
 }
