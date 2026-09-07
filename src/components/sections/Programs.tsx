@@ -10,11 +10,11 @@ export function Programs() {
   return (
     <Section id="programs" innerClassName="lg:grid lg:grid-cols-12 lg:gap-16">
       <div className="lg:col-span-4">
-        <div className="lg:sticky lg:top-28">
-          <p className="type-eyebrow text-accent">Programs</p>
-          <h2 className="mt-4 type-h2 text-ink">Pick what you are training for</h2>
-          <Motif id="barbell-line" className="mt-6 w-40 text-border-strong" />
-          <p className="mt-6 max-w-sm type-body text-ink-muted">
+        <div className="stagger lg:sticky lg:top-28">
+          <p className="reveal type-eyebrow text-accent">Programs</p>
+          <h2 className="reveal mt-4 type-h2 text-ink">Pick what you are training for</h2>
+          <Motif id="barbell-line" className="reveal-wipe-x mt-6 w-40 text-border-strong" />
+          <p className="reveal mt-6 max-w-sm type-body text-ink-muted">
             Eight programs run at the studio. Every one of them is coached, and the weight is set
             to what you can do today.
           </p>
@@ -25,9 +25,9 @@ export function Programs() {
         {site.programs.map((program, index) => (
           <li
             key={program.id}
-            className="grid grid-cols-[2.5rem_1fr] gap-x-5 gap-y-2 border-t border-border py-7 last:border-b sm:grid-cols-[3.5rem_1fr]"
+            className="reveal grid grid-cols-[2.5rem_1fr] gap-x-5 gap-y-2 border-t border-border py-7 last:border-b sm:grid-cols-[3.5rem_1fr]"
           >
-            <span aria-hidden="true" className="type-h3 text-border-strong">
+            <span aria-hidden="true" className="reveal-land reveal-late type-h3 text-border-strong">
               {String(index + 1).padStart(2, "0")}
             </span>
             <div>

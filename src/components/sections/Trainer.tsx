@@ -12,7 +12,9 @@ export async function Trainer() {
 
   return (
     <Section id="trainer" innerClassName="lg:grid lg:grid-cols-12 lg:items-start lg:gap-16">
-      <div className="lg:col-span-5">
+      {/* The frame clips its contents, which makes it a scroll container, so */}
+      {/* the portrait borrows a timeline named on the column outside it. */}
+      <div className="timeline-group lg:col-span-5">
         <div className="overflow-hidden rounded-media bg-media-bg">
           <CldPicture
             publicId={portrait?.publicId ?? null}
@@ -21,23 +23,26 @@ export async function Trainer() {
             height={900}
             sizes="(min-width: 1024px) 40vw, 100vw"
             placeholderLabel={`Portrait appears here once an image is uploaded to the "${site.media.trainerFolder}" folder in Cloudinary`}
-            className="aspect-[4/5] h-full w-full object-cover"
+            className="reveal-settle in-group aspect-[4/5] h-full w-full object-cover"
           />
         </div>
       </div>
 
-      <div className="mt-10 lg:col-span-7 lg:mt-0">
-        <p className="type-eyebrow text-accent">{trainer.role}</p>
-        <h2 className="mt-4 type-h2 text-ink">Coached by {trainer.name}</h2>
-        <p className="mt-6 max-w-xl type-lead text-ink-muted">
+      <div className="stagger mt-10 lg:col-span-7 lg:mt-0">
+        <p className="reveal type-eyebrow text-accent">{trainer.role}</p>
+        <h2 className="reveal mt-4 type-h2 text-ink">Coached by {trainer.name}</h2>
+        <p className="reveal mt-6 max-w-xl type-lead text-ink-muted">
           She competes in powerlifting at national level and coaches the floor herself, so the
           person correcting your setup has taken the same lifts under a judge.
         </p>
 
-        <h3 className="mt-10 type-eyebrow text-ink-muted">Competition record</h3>
-        <ul className="mt-4 max-w-xl">
+        <h3 className="reveal mt-10 type-eyebrow text-ink-muted">Competition record</h3>
+        <ul className="stagger mt-4 max-w-xl">
           {trainer.awards.map((award) => (
-            <li key={award} className="border-t border-border py-4 type-body text-ink last:border-b">
+            <li
+              key={award}
+              className="reveal border-t border-border py-4 type-body text-ink last:border-b"
+            >
               {award}
             </li>
           ))}

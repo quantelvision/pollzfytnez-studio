@@ -1,0 +1,316 @@
+/* The motion system. */
+
+/* Everything that reacts to scroll here is CSS scroll driven, so it costs no */
+/* JavaScript, forces no section to become a client component, and runs off the */
+/* main thread. Two guards wrap the scroll work: a browser without scroll driven */
+/* animation and a visitor who asks for reduced motion both get the finished */
+/* state, never a hidden one. Only transform and opacity are animated, so nothing */
+/* here can shift layout. */
+
+/* Each section gets one idea drawn from its own content rather than the same */
+/* fade repeated down the page: the week chart grows its bars along the timeline, */
+/* the getting started track draws itself through the numbered nodes, the clay */
+/* rule under the strongest claim wipes in, the price lands, the studio name */
+/* rises into the footer. */
+
+/* Word reveal structure. Unguarded, so the layout is identical whether or not */
+/* the animation runs. Each word sits in its own mask and rises from behind the */
+/* line instead of fading. The padding and its matching negative margin keep the */
+/* mask clear of descenders, and aligning the bottom edges keeps the words on one */
+/* line, since overflow hidden moves an inline block's baseline to its bottom. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+  vertical-align: bottom;
+}
+
+.word-rise {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Time based rather than scroll driven: these are above the fold on load, or */
+  /* they answer a click, so there is no scroll to drive them. */
+
+  @keyframes motif-draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* The hand drawn underline wipes in from the left, the way it would be drawn */
+  /* under the word. The h1 itself never animates, so the LCP element is never */
+  /* delayed by any of this. */
+  .hero-underline {
+    transform-origin: left center;
+    animation: motif-draw var(--t-duration-slow) var(--t-ease) both;
+    animation-delay: var(--t-duration-base);
+  }
+
+  /* Rotation and scale only, never the centring translate. Tailwind v4 centres */
+  /* the mark with the standalone translate property, which composes with */
+  /* transform rather than being replaced by it, so repeating the translate here */
+  /* applied it twice and threw the circle half its own size up and to the left. */
+  @keyframes motif-circle {
+    from {
+      opacity: 0;
+      transform: rotate(-16deg) scale(0.5);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* The scribble lands around the rating last, the way a number gets circled */
+  /* after it has been written. */
+  .hero-circle {
+    animation: motif-circle var(--t-duration-slow) var(--t-ease) both;
+    animation-delay: calc(var(--t-duration-slow) + var(--t-duration-base));
+  }
+
+  @keyframes bar-draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* The opening hours bars. Time based rather than scroll driven, because they */
+  /* live in a tab panel: a view() timeline inside a panel that is display none */
+  /* never advances, and the bar would sit at zero width. Being time based also */
+  /* means the week redraws each time a branch is picked, which is the moment */
+  /* the comparison is being made. The stagger is derived from a motion token */
+  /* rather than a literal, so it retimes with the theme. */
+  .bar-draw {
+    transform-origin: left center;
+    animation: bar-draw var(--t-duration-slow) var(--t-ease) both;
+    animation-delay: calc(var(--i, 0) * var(--t-duration-fast) / 2);
+  }
+
+  @keyframes answer-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* An opened answer eases down into place. The height still changes instantly, */
+  /* because animating height would animate layout. */
+  details[open] > .faq-answer {
+    animation: answer-in var(--t-duration-base) var(--t-ease) both;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes reveal-rise {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Further travel, for the one element a section leads with */
+    @keyframes reveal-lead {
+      from {
+        opacity: 0;
+        transform: translateY(44px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Media settles into its frame rather than rising into it */
+    @keyframes reveal-settle {
+      from {
+        opacity: 0;
+        transform: scale(1.06);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* For things that read as a result landing: the price, a node on the track */
+    @keyframes reveal-land {
+      from {
+        opacity: 0;
+        transform: scale(0.68);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes reveal-wipe-x {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    @keyframes reveal-wipe-y {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
+    }
+
+    @keyframes reveal-word {
+      from {
+        transform: translateY(105%);
+      }
+      to {
+        transform: none;
+      }
+    }
+
+    /* The sign off slides up as the footer arrives */
+    @keyframes reveal-signoff {
+      from {
+        opacity: 0;
+        transform: translateY(35%);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* One shared shape. An arrival runs on its own view timeline over the window */
+    /* in which the element is entering the screen, offset by --i so a group of */
+    /* them comes in one after another instead of all at once. --i is set by the */
+    /* stagger rules below, and defaults to no offset. */
+    .reveal,
+    .reveal-lead,
+    .reveal-settle,
+    .reveal-land,
+    .reveal-wipe-x,
+    .reveal-wipe-y,
+    .reveal-signoff,
+    .word-rise {
+      animation-duration: auto;
+      animation-timing-function: var(--t-ease);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      /* Absolute offsets, not percentages. A percentage of the entry phase */
+      /* resolves against the element's own height, so a one line heading would */
+      /* animate over about thirty pixels of scroll and snap, while a tall block */
+      /* crawled. A fixed distance gives everything the same reveal, and every */
+      /* window still closes well inside a phone viewport, so nothing is left */
+      /* stranded part way through. */
+      animation-range: entry calc(var(--i, 0) * 40px) entry calc(280px + var(--i, 0) * 40px);
+    }
+
+    .reveal {
+      animation-name: reveal-rise;
+    }
+
+    .reveal-lead {
+      animation-name: reveal-lead;
+    }
+
+    .reveal-settle {
+      animation-name: reveal-settle;
+    }
+
+    .reveal-land {
+      animation-name: reveal-land;
+    }
+
+    .reveal-wipe-x {
+      animation-name: reveal-wipe-x;
+      transform-origin: left center;
+    }
+
+    .reveal-wipe-y {
+      animation-name: reveal-wipe-y;
+      transform-origin: center top;
+    }
+
+    .word-rise {
+      animation-name: reveal-word;
+    }
+
+    .reveal-signoff {
+      animation-name: reveal-signoff;
+      animation-range: entry 25% entry 95%;
+    }
+
+    /* Same arrival, held back so it follows the thing it belongs to: the node */
+    /* after the track reaches it, the price after its card. Must stay after the */
+    /* shared block, which also sets animation-range. */
+    .reveal-late {
+      animation-range: entry calc(110px + var(--i, 0) * 40px) entry calc(390px + var(--i, 0) * 40px);
+    }
+
+    /* Position in a group, so a set of siblings arrives in order rather than */
+    /* together. Written out rather than computed, because sibling-index() is too */
+    /* new to rely on. It caps at the eighth, which is the longest group that */
+    /* still finishes inside a phone viewport: at that offset the last window */
+    /* closes about 140px below the top of the screen. */
+    .stagger > *:nth-child(1) {
+      --i: 0;
+    }
+    .stagger > *:nth-child(2) {
+      --i: 1;
+    }
+    .stagger > *:nth-child(3) {
+      --i: 2;
+    }
+    .stagger > *:nth-child(4) {
+      --i: 3;
+    }
+    .stagger > *:nth-child(5) {
+      --i: 4;
+    }
+    .stagger > *:nth-child(6) {
+      --i: 5;
+    }
+    .stagger > *:nth-child(7) {
+      --i: 6;
+    }
+    .stagger > *:nth-child(8) {
+      --i: 7;
+    }
+    .stagger > *:nth-child(n + 9) {
+      --i: 7;
+    }
+
+    /* An element inside a box with overflow hidden cannot use view(), because */
+    /* that box is itself a scroll container and the element never travels */
+    /* through it. The ancestor outside the box names a timeline instead, and the */
+    /* element borrows it. Must stay after the shared block so it wins. */
+    .timeline-group {
+      view-timeline: --group block;
+    }
+
+    .in-group {
+      animation-timeline: --group;
+    }
+  }
+}

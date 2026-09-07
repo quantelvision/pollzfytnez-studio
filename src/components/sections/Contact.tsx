@@ -71,10 +71,10 @@ export function Contact() {
   return (
     <Section id="contact" className="bg-accent-tint">
       <div className="lg:grid lg:grid-cols-12 lg:gap-16">
-        <div className="lg:col-span-5">
-          <p className="type-eyebrow text-accent">Contact</p>
-          <h2 className="mt-4 type-h2 text-ink">Ask us anything</h2>
-          <p className="mt-6 max-w-sm type-body text-ink-muted">
+        <div className="stagger lg:col-span-5">
+          <p className="reveal type-eyebrow text-accent">Contact</p>
+          <h2 className="reveal mt-4 type-h2 text-ink">Ask us anything</h2>
+          <p className="reveal mt-6 max-w-sm type-body text-ink-muted">
             Leave your details and we will get back to you. Tell us which branch suits you and what
             you are training for.
           </p>

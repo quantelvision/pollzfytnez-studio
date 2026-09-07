@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./motion.css";
 
 /* Runtime theme variables (--t-*) are set on the root element from the active theme in src/config/themes. */
 /* Tailwind's default palettes are cleared so the only colours, fonts, radii and sizes that exist are the theme's own. */
@@ -129,23 +130,26 @@
 @layer base {
   /* Thin scrollbar in the theme's own colours. */
   /* Firefox reads scrollbar-color, Chrome and Safari the webkit pseudo elements, both from the same tokens. */
+  /* The track token is transparent, so the page surface runs behind the whole bar */
+  /* and only the handle is drawn. The handle is the accent, the same colour as every */
+  /* other thing on the page you can grab, and keeps its inset from a transparent */
+  /* border clipped to the padding box, which needs no second colour to sit on. */
   html {
     scrollbar-width: thin;
     scrollbar-color: var(--t-color-scrollbar-thumb) var(--t-color-scrollbar-track);
   }
 
-  ::-webkit-scrollbar {
+  ::-webkit-scrollbar,
+  ::-webkit-scrollbar-track {
     width: 10px;
     height: 10px;
-  }
-
-  ::-webkit-scrollbar-track {
     background-color: var(--t-color-scrollbar-track);
   }
 
   ::-webkit-scrollbar-thumb {
     background-color: var(--t-color-scrollbar-thumb);
-    border: 3px solid var(--t-color-scrollbar-track);
+    border: 3px solid transparent;
+    background-clip: padding-box;
     border-radius: 999px;
   }
 
@@ -298,6 +302,18 @@
   text-align: center;
   white-space: nowrap;
   margin-bottom: -0.14em;
+}
+
+/* Horizontal strip that is dragged rather than pushed by its scrollbar. */
+/* The bar is hidden because the thumbnails and the arrows already say it moves, */
+/* and a scroll groove across the foot of the lightbox read as chrome. */
+/* Unlayered, so it wins over the page scrollbar rules in the base layer. */
+.thumb-strip {
+  scrollbar-width: none;
+}
+
+.thumb-strip::-webkit-scrollbar {
+  display: none;
 }
 
 /* Loading indicator for media that has not arrived yet. */
