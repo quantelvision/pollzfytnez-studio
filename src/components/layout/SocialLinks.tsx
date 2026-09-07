@@ -1,12 +1,4 @@
-import {
-  SiFacebook,
-  SiGooglemaps,
-  SiInstagram,
-  SiThreads,
-  SiWhatsapp,
-  SiX,
-  SiYoutube,
-} from "react-icons/si";
+import { SiFacebook, SiInstagram, SiWhatsapp } from "react-icons/si";
 import type { IconType } from "react-icons";
 import { site } from "@/config/site";
 
@@ -17,19 +9,10 @@ const brandIcons: Record<string, IconType> = {
   whatsapp: SiWhatsapp,
   instagram: SiInstagram,
   facebook: SiFacebook,
-  youtube: SiYoutube,
-  x: SiX,
-  threads: SiThreads,
-  googlemaps: SiGooglemaps,
 };
 
-// A "#" entry is a placeholder waiting on a real profile URL, so it stays on
-// the page but does not open a blank tab.
 export function SocialLinks({ className }: { className?: string }) {
-  const links = site.socials.filter((social) => social.url !== null);
-  if (links.length === 0) {
-    return null;
-  }
+  const links = site.socials;
 
   return (
     <ul className={["flex flex-wrap items-center gap-x-3.5 gap-y-3", className].filter(Boolean).join(" ")}>
@@ -38,10 +21,9 @@ export function SocialLinks({ className }: { className?: string }) {
         return (
           <li key={social.id}>
             <a
-              href={social.url as string}
-              {...(social.url === "#"
-                ? {}
-                : { target: "_blank", rel: "noopener noreferrer" })}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-button text-surface/70 transition-colors ease-brand hover:text-surface"
             >
               <Icon aria-hidden="true" className="size-5" />

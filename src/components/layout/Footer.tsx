@@ -1,3 +1,4 @@
+import { ArrowUp } from "lucide-react";
 import { site } from "@/config/site";
 import { whatsappLink, whatsappMessages } from "@/lib/whatsapp";
 import { BrandLogo } from "./BrandLogo";
@@ -10,15 +11,16 @@ export function Footer({ logoSrc }: { logoSrc: string | null }) {
   const branch = site.branches.find((entry) => entry.address !== null);
 
   return (
-    <footer className="overflow-hidden bg-ink text-surface" data-on-dark="">
+    // The footer clips the oversized sign off, which makes it a scroll
+    // container, so everything inside borrows the timeline it names.
+    <footer className="timeline-group overflow-hidden bg-ink text-surface" data-on-dark="">
       <div className="mx-auto max-w-page px-gutter pt-20 pb-10">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+        <div className="stagger grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="reveal in-group">
             <BrandLogo logoSrc={logoSrc} onDark size="lg" />
-            <p className="mt-4 max-w-xs type-body text-surface/70">{site.tagline}</p>
           </div>
 
-          <nav aria-labelledby="footer-programs">
+          <nav aria-labelledby="footer-programs" className="reveal in-group">
             <h2 id="footer-programs" className="type-h3 text-surface">
               Programs
             </h2>
@@ -38,7 +40,7 @@ export function Footer({ logoSrc }: { logoSrc: string | null }) {
             </ul>
           </nav>
 
-          <div>
+          <div className="reveal in-group">
             <h2 className="type-h3 text-surface">Contacts</h2>
             <ul className="mt-6 space-y-3">
               {branch?.address ? (
@@ -73,18 +75,32 @@ export function Footer({ logoSrc }: { logoSrc: string | null }) {
             </ul>
           </div>
 
-          <div>
+          <div className="reveal in-group">
             <h2 className="type-h3 text-surface">In socials</h2>
             <SocialLinks className="mt-6" />
           </div>
         </div>
 
-        <p className="mt-16 type-small text-surface/50">
-          Copyright {new Date().getFullYear()} {site.name}. All rights reserved.
-        </p>
+        <div className="mt-16 flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="type-small text-surface/50">
+            Copyright {new Date().getFullYear()} {site.name}. All rights reserved.
+          </p>
+          {/* A plain anchor, so it works before hydration and needs no client */}
+          {/* boundary. Lenis eases it, and reduced motion jumps straight there. */}
+          <a
+            href="#main"
+            className="btn-ring inline-flex items-center gap-2 rounded-button border border-surface/25 px-5 py-2.5 type-button text-surface transition-[background-color,border-color,box-shadow,color] ease-brand hover:border-surface hover:bg-surface hover:text-ink"
+          >
+            <ArrowUp aria-hidden="true" className="size-4" />
+            Back to top
+          </a>
+        </div>
       </div>
 
-      <p aria-hidden="true" className="footer-wordmark text-surface/12 select-none">
+      <p
+        aria-hidden="true"
+        className="footer-wordmark reveal-signoff in-group text-surface/12 select-none"
+      >
         {site.name}
       </p>
     </footer>

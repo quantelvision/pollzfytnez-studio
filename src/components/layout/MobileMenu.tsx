@@ -3,13 +3,18 @@
 import { AnimatePresence, m } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 import { useTheme } from "@/components/theme/ThemeContext";
 import { navLinks } from "@/config/nav";
+import { site } from "@/config/site";
 import { whatsappLink, whatsappMessages } from "@/lib/whatsapp";
 
-// Disclosure menu for narrow screens. Motion handles the exit animation, which
-// plain CSS cannot do once the node is removed. Focus moves into the panel on
-// open, is trapped while it is open, and returns to the trigger on close.
+// Full screen menu for narrow screens. It covers the page rather than hanging
+// under the header, so a thumb has the whole screen to aim at and the page
+// behind cannot be half read through it. Motion handles the exit animation,
+// which plain CSS cannot do once the node is removed. Focus moves into the
+// panel on open, is trapped while it is open, and returns to the trigger on
+// close, and the page behind is locked from scrolling.
 export function MobileMenu({ onDark }: { onDark: boolean }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -23,6 +28,9 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
 
     const panel = panelRef.current;
     panel?.querySelector<HTMLElement>("a, button")?.focus();
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -49,9 +57,14 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
     };
 
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
   }, [open]);
 
+  const close = () => setOpen(false);
+  // the trigger sits above the panel, so once open it is always on the surface
   const triggerTone = onDark && !open ? "text-surface" : "text-ink";
 
   return (
@@ -62,7 +75,7 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
         aria-expanded={open}
         aria-controls="mobile-menu"
         onClick={() => setOpen((value) => !value)}
-        className={`inline-flex items-center justify-center rounded-button p-2.5 transition-colors ease-brand ${triggerTone}`}
+        className={`relative z-50 inline-flex cursor-pointer items-center justify-center rounded-button p-2.5 transition-colors ease-brand ${triggerTone}`}
       >
         {open ? (
           <X aria-hidden="true" className="size-6" />
@@ -77,11 +90,11 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
           <m.div
             id="mobile-menu"
             ref={panelRef}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: theme.motion.durationBase / 1000, ease: theme.motion.ease }}
-            className="absolute inset-x-0 top-full border-b border-border bg-surface px-gutter pb-6"
+            className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-surface px-gutter pt-24 pb-10"
           >
             <nav aria-label="Sections">
               <ul>
@@ -89,7 +102,7 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      onClick={() => setOpen(false)}
+                      onClick={close}
                       className="block border-b border-border py-4 type-h3 text-ink"
                     >
                       {link.label}
@@ -98,15 +111,40 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
                 ))}
               </ul>
             </nav>
-            <a
-              href={whatsappLink(whatsappMessages.freeTrial)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-button bg-accent px-5 py-3 type-button text-on-accent"
-            >
-              Book Free Trial
-            </a>
+
+            <div className="mt-auto pt-10">
+              <a
+                href={whatsappLink(whatsappMessages.freeTrial)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={close}
+                className="inline-flex w-full items-center justify-center rounded-button bg-accent px-5 py-4 type-button text-on-accent"
+              >
+                Book Free Trial
+              </a>
+
+              <ul className="mt-8">
+                {site.phones.map((phone) => (
+                  <li key={phone.tel}>
+                    <a
+                      href={`tel:${phone.tel}`}
+                      onClick={close}
+                      className="block py-1.5 type-body text-ink-muted"
+                    >
+                      {phone.display}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              {/* The row is built for a dark footer, so it is put on ink here */}
+              <div
+                data-on-dark=""
+                className="mt-6 rounded-card bg-ink px-5 py-4"
+              >
+                <SocialLinks />
+              </div>
+            </div>
           </m.div>
         ) : null}
       </AnimatePresence>
