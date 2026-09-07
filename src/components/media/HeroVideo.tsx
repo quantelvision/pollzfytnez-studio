@@ -1,4 +1,10 @@
-import { getFolderAssets, isCloudinaryConfigured, videoPosterUrl, videoUrl } from "@/lib/cloudinary";
+import {
+  getFolderAssets,
+  isCloudinaryConfigured,
+  videoPosterBlurUrl,
+  videoPosterUrl,
+  videoUrl,
+} from "@/lib/cloudinary";
 import { HeroVideoClient, type HeroClip } from "./HeroVideoClient";
 import { MediaPlaceholder } from "./MediaPlaceholder";
 
@@ -30,5 +36,11 @@ export async function HeroVideo({ folder, className }: { folder: string; classNa
     label: asset.alt,
   }));
 
-  return <HeroVideoClient clips={clips} className={className} />;
+  return (
+    <HeroVideoClient
+      clips={clips}
+      ground={videoPosterBlurUrl(assets[0].publicId)}
+      className={className}
+    />
+  );
 }

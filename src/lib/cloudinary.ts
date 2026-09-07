@@ -80,6 +80,18 @@ export function videoPosterUrl(publicId: string, width: number): string {
   return buildUrl("video", ["so_0", "f_auto", "q_auto", `w_${width}`], publicId, "jpg");
 }
 
+// The same frame at a size where it arrives almost immediately, blurred so it
+// reads as a ground rather than as a broken image. A couple of kilobytes, so it
+// paints while the video is still downloading and the hero is never an empty box.
+export function videoPosterBlurUrl(publicId: string): string {
+  return buildUrl(
+    "video",
+    ["so_0", "f_auto", "q_auto:low", "w_64", "e_blur:1000"],
+    publicId,
+    "jpg",
+  );
+}
+
 interface AssetContext {
   alt?: string;
   title?: string;
