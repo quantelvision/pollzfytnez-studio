@@ -1,7 +1,9 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { m } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTheme } from "@/components/theme/ThemeContext";
 import type { GalleryItem } from "./gallery-types";
 
 // Built rather than pulled in, so it takes the theme's colours, radii and
@@ -15,6 +17,8 @@ import type { GalleryItem } from "./gallery-types";
 const PRELOAD_RADIUS = 2;
 // Horizontal travel before a touch counts as a swipe
 const SWIPE_THRESHOLD = 50;
+// Pointer travel before a press on the strip counts as a drag rather than a click
+const DRAG_THRESHOLD = 6;
 
 export function Lightbox({
   items,
@@ -27,10 +31,15 @@ export function Lightbox({
   onClose: () => void;
   onIndexChange: (next: number) => void;
 }) {
+  const theme = useTheme();
   const panelRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const thumbRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const touchStartX = useRef<number | null>(null);
+  // Drag-to-scroll state for the thumbnail strip. Refs rather than state: this
+  // runs on every pointer move and must not re-render the strip.
+  const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  const dragTeardown = useRef<(() => void) | null>(null);
   // Which items have finished decoding. Derived rather than set from an effect,
   // so revisiting an item never flashes the spinner a second time.
   const [loadedIds, setLoadedIds] = useState<ReadonlySet<string>>(new Set());
@@ -52,6 +61,9 @@ export function Lightbox({
     (delta: number) => onIndexChange((index + delta + items.length) % items.length),
     [index, items.length, onIndexChange],
   );
+
+  // Drops the window listeners if the dialog closes mid-drag
+  useEffect(() => () => dragTeardown.current?.(), []);
 
   // Fetch the neighbours so stepping through does not wait on the network
   useEffect(() => {
@@ -126,15 +138,68 @@ export function Lightbox({
     }
   };
 
+  // Mouse only: touch already scrolls the strip natively, and taking that over
+  // would fight the browser's own momentum.
+  //
+  // The move and release are listened for on the window rather than through
+  // setPointerCapture. Capturing the pointer retargets the click that follows
+  // to the capturing element, which meant a thumbnail press never reached the
+  // thumbnail. The window listeners let the drag continue outside the strip
+  // without touching where the click lands.
+  const onStripPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const strip = stripRef.current;
+    if (!strip || event.pointerType !== "mouse" || event.button !== 0) {
+      return;
+    }
+    drag.current = {
+      active: true,
+      startX: event.clientX,
+      startScroll: strip.scrollLeft,
+      moved: false,
+    };
+
+    const onMove = (move: PointerEvent) => {
+      const travel = move.clientX - drag.current.startX;
+      if (Math.abs(travel) > DRAG_THRESHOLD) {
+        drag.current.moved = true;
+      }
+      // instant, because the strip carries scroll-behavior smooth for the
+      // arrows and for keeping the current thumbnail in view
+      strip.scrollTo({ left: drag.current.startScroll - travel, behavior: "instant" });
+    };
+    const onUp = () => {
+      drag.current.active = false;
+      dragTeardown.current = null;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+
+    dragTeardown.current = onUp;
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  };
+
+  // Round filled pills that float over the media
   const control =
-    "btn-ring inline-flex size-11 shrink-0 items-center justify-center rounded-button bg-surface/15 text-surface transition-[background-color,box-shadow,transform] ease-brand hover:bg-surface hover:text-ink active:scale-(--t-press-scale)";
+    "btn-ring inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-button bg-surface/15 text-surface transition-[background-color,box-shadow,transform] ease-brand hover:bg-surface hover:text-ink active:scale-(--t-press-scale)";
+
+  // The strip arrows are a lesser control than the ones on the media, so they
+  // take a plain arrow and a flat square shape instead of a filled pill.
+  const stripControl =
+    "inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-input text-surface/55 transition-colors ease-brand hover:bg-surface/10 hover:text-surface";
 
   return (
-    <div
+    <m.div
       role="dialog"
       aria-modal="true"
       aria-label={`Gallery, item ${index + 1} of ${items.length}`}
       data-on-dark=""
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: theme.motion.durationBase / 1000, ease: theme.motion.ease }}
       className="fixed inset-0 z-50 flex flex-col bg-ink"
     >
       <div ref={panelRef} className="flex h-full flex-col">
@@ -215,7 +280,13 @@ export function Lightbox({
               <figcaption className="absolute inset-x-0 bottom-0 rounded-b-media bg-ink/75 px-4 py-3 sm:px-6 sm:py-4">
                 {item.title ? <p className="type-h3 text-surface">{item.title}</p> : null}
                 {item.caption ? (
-                  <p className="mt-1 type-small text-surface/80">{item.caption}</p>
+                  <p
+                    className={
+                      item.title ? "mt-1 type-small text-surface/80" : "type-body text-surface"
+                    }
+                  >
+                    {item.caption}
+                  </p>
                 ) : null}
               </figcaption>
             ) : null}
@@ -243,15 +314,23 @@ export function Lightbox({
           <button
             type="button"
             onClick={() => scrollStrip(-1)}
-            className={`${control} hidden sm:inline-flex`}
+            className={`${stripControl} hidden sm:inline-flex`}
           >
-            <ChevronLeft aria-hidden="true" className="size-5" />
+            <ArrowLeft aria-hidden="true" className="size-5" />
             <span className="sr-only">Scroll thumbnails back</span>
           </button>
 
           <div
             ref={stripRef}
-            className="flex min-w-0 flex-1 gap-2 overflow-x-auto scroll-smooth sm:gap-3"
+            onPointerDown={onStripPointerDown}
+            onClickCapture={(event) => {
+              // a drag that ends on a thumbnail must not also select it
+              if (drag.current.moved) {
+                event.stopPropagation();
+                drag.current.moved = false;
+              }
+            }}
+            className="thumb-strip flex min-w-0 flex-1 cursor-grab gap-2 overflow-x-auto scroll-smooth py-1.5 select-none active:cursor-grabbing sm:gap-3"
           >
             {items.map((thumb, thumbIndex) => {
               const isCurrent = thumbIndex === index;
@@ -264,7 +343,7 @@ export function Lightbox({
                   }}
                   onClick={() => onIndexChange(thumbIndex)}
                   aria-current={isCurrent ? "true" : undefined}
-                  className={`relative size-14 shrink-0 overflow-hidden rounded-input bg-media-bg transition-opacity ease-brand sm:size-16 ${
+                  className={`relative size-14 shrink-0 cursor-pointer overflow-hidden rounded-input bg-media-bg transition-opacity ease-brand sm:size-16 ${
                     isCurrent ? "outline-2 outline-surface" : "opacity-55 hover:opacity-100"
                   }`}
                 >
@@ -274,6 +353,7 @@ export function Lightbox({
                     alt=""
                     loading="lazy"
                     decoding="async"
+                    draggable={false}
                     className="size-full object-cover"
                   />
                   {thumb.kind === "video" ? (
@@ -295,13 +375,13 @@ export function Lightbox({
           <button
             type="button"
             onClick={() => scrollStrip(1)}
-            className={`${control} hidden sm:inline-flex`}
+            className={`${stripControl} hidden sm:inline-flex`}
           >
-            <ChevronRight aria-hidden="true" className="size-5" />
+            <ArrowRight aria-hidden="true" className="size-5" />
             <span className="sr-only">Scroll thumbnails forward</span>
           </button>
         </div>
       </div>
-    </div>
+    </m.div>
   );
 }

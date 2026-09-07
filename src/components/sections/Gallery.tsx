@@ -57,10 +57,10 @@ export async function Gallery() {
 
   return (
     <Section id="gallery" className="border-t border-border">
-      <div className="max-w-2xl">
-        <p className="type-eyebrow text-accent">Gallery</p>
-        <h2 className="mt-4 type-h2 text-ink">Inside the studio</h2>
-        <p className="mt-6 type-lead text-ink-muted">
+      <div className="stagger max-w-2xl">
+        <p className="reveal type-eyebrow text-accent">Gallery</p>
+        <h2 className="reveal mt-4 type-h2 text-ink">Inside the studio</h2>
+        <p className="reveal mt-6 type-lead text-ink-muted">
           The floor, the kit and the people who train on it.
         </p>
       </div>

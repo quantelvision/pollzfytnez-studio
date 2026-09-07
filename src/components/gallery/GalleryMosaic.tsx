@@ -1,6 +1,7 @@
 "use client";
 
 import { Play } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { GalleryItem } from "./gallery-types";
@@ -33,13 +34,13 @@ export function GalleryMosaic({
 
   return (
     <>
-      <ul className="grid grid-cols-2 gap-3 sm:auto-rows-[11rem] sm:grid-cols-4 lg:auto-rows-[13rem]">
+      <ul className="stagger grid grid-cols-2 gap-3 sm:auto-rows-[11rem] sm:grid-cols-4 lg:auto-rows-[13rem]">
         {preview.map((item, index) => (
-          <li key={item.id} className={SPANS[index % SPANS.length]}>
+          <li key={item.id} className={`reveal-settle ${SPANS[index % SPANS.length]}`}>
             <button
               type="button"
               onClick={() => setOpenAt(index)}
-              className="group relative block size-full overflow-hidden rounded-media bg-media-bg"
+              className="group relative block size-full cursor-pointer overflow-hidden rounded-media bg-media-bg"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -79,21 +80,23 @@ export function GalleryMosaic({
       </ul>
 
       {hasMore ? (
-        <div className="mt-10">
-          <Button variant="quiet" onClick={() => setOpenAt(preview.length)}>
+        <div className="reveal mt-10 flex sm:justify-end">
+          <Button variant="quiet" className="cursor-pointer" onClick={() => setOpenAt(preview.length)}>
             See all {items.length} photos and videos
           </Button>
         </div>
       ) : null}
 
-      {openAt !== null ? (
-        <Lightbox
-          items={items}
-          index={openAt}
-          onClose={() => setOpenAt(null)}
-          onIndexChange={setOpenAt}
-        />
-      ) : null}
+      <AnimatePresence>
+        {openAt !== null ? (
+          <Lightbox
+            items={items}
+            index={openAt}
+            onClose={() => setOpenAt(null)}
+            onIndexChange={setOpenAt}
+          />
+        ) : null}
+      </AnimatePresence>
     </>
   );
 }

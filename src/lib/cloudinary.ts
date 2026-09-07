@@ -21,6 +21,11 @@ export interface CloudinaryAsset {
   // are documented in docs/media.md; description is accepted as a caption alias.
   title: string | null;
   caption: string | null;
+  // When the photo was taken, from EXIF, and when it was uploaded. The gallery
+  // orders by the first and falls back to the second. See docs/media.md: an
+  // asset that has been through WhatsApp carries no EXIF at all.
+  capturedAt: number | null;
+  uploadedAt: number;
 }
 
 const cloudName = () => process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
@@ -75,19 +80,47 @@ export function videoPosterUrl(publicId: string, width: number): string {
   return buildUrl("video", ["so_0", "f_auto", "q_auto", `w_${width}`], publicId, "jpg");
 }
 
+interface AssetContext {
+  alt?: string;
+  title?: string;
+  caption?: string;
+  description?: string;
+}
+
 interface SearchResource {
   public_id: string;
   resource_type: string;
   width?: number;
   height?: number;
   duration?: number;
-  context?: {
-    custom?: { alt?: string; title?: string; caption?: string; description?: string };
-  };
+  created_at?: string;
+  // EXIF and similar, requested through with_field. DateTimeOriginal is the
+  // capture time; it is absent on anything stripped of its metadata.
+  image_metadata?: { DateTimeOriginal?: string; CreateDate?: string };
+  // The search API returns the contextual fields flat, the resource API nests
+  // them under custom. Both shapes are read so a caption set in the console
+  // arrives whichever endpoint answered.
+  context?: AssetContext & { custom?: AssetContext };
+}
+
+// EXIF writes a date as "YYYY:MM:DD HH:MM:SS", with colons in the date part
+// and no timezone, so it is neither ISO nor parseable as it stands. The camera
+// clock is read as Chennai time, which is where these are taken.
+function exifToTimestamp(value: string | undefined): number | null {
+  if (!value) {
+    return null;
+  }
+  const match = value.match(/^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);
+  if (!match) {
+    return null;
+  }
+  const [, year, month, day, hour, minute, second] = match;
+  const parsed = Date.parse(`${year}-${month}-${day}T${hour}:${minute}:${second}+05:30`);
+  return Number.isNaN(parsed) ? null : parsed;
 }
 
 function toAsset(resource: SearchResource): CloudinaryAsset {
-  const custom = resource.context?.custom ?? {};
+  const custom = resource.context?.custom ?? resource.context ?? {};
   return {
     publicId: resource.public_id,
     resourceType: resource.resource_type === "video" ? "video" : "image",
@@ -97,6 +130,10 @@ function toAsset(resource: SearchResource): CloudinaryAsset {
     alt: custom.alt ?? null,
     title: custom.title ?? null,
     caption: custom.caption ?? custom.description ?? null,
+    capturedAt: exifToTimestamp(
+      resource.image_metadata?.DateTimeOriginal ?? resource.image_metadata?.CreateDate,
+    ),
+    uploadedAt: resource.created_at ? Date.parse(resource.created_at) : 0,
   };
 }
 
@@ -118,7 +155,7 @@ async function search(expression: string, max: number, sortBy: object[]): Promis
     body: JSON.stringify({
       expression,
       max_results: max,
-      with_field: ["context"],
+      with_field: ["context", "image_metadata"],
       sort_by: sortBy,
     }),
   };
@@ -149,13 +186,18 @@ async function search(expression: string, max: number, sortBy: object[]): Promis
   }
 }
 
-// Everything in a folder, images and video together, newest upload first.
-// Used by the gallery, where recency is the running order.
+// Everything in a folder, images and video together, most recently taken first.
+// The search API cannot sort on an EXIF field, so the order is applied here
+// after fetching. Anything without a capture time, which is every video and any
+// image stripped of its metadata, falls back to when it was uploaded.
 export async function getFolderMedia(folder: string, max = 100): Promise<CloudinaryAsset[]> {
-  return search(
+  const assets = await search(
     `(resource_type:image OR resource_type:video) AND (folder="${folder}" OR asset_folder="${folder}")`,
     max,
     [{ created_at: "desc" }],
+  );
+  return [...assets].sort(
+    (a, b) => (b.capturedAt ?? b.uploadedAt) - (a.capturedAt ?? a.uploadedAt),
   );
 }
 
