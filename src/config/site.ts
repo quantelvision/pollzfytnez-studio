@@ -49,7 +49,11 @@ export const site = {
   name: "Pollz Fytnez Studio",
   // printed on the logo itself, kept verbatim
   tagline: "Train like a Star",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://pollzfytnezstudio.in",
+  // The www host is the canonical one, confirmed 2026-09-08. A trailing slash
+  // is stripped because everything downstream appends its own: the sitemap, the
+  // robots file and every @id in the structured data would otherwise carry a
+  // double slash and point at URLs that do not match the canonical.
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.pollzfytnezgym.in").replace(/\/+$/, ""),
   description:
     "Strength training, conditioning and personal coaching at Pollz Fytnez Studio in Kolathur, Chennai. Two branches, both open from 5 AM Monday to Saturday. Message us on WhatsApp for a free trial day.",
 
