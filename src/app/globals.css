@@ -316,6 +316,28 @@
   display: none;
 }
 
+/* Holds a media slot while its image decodes. Sits above the slot's own */
+/* mediaBg so it reads as loading rather than as an empty frame. */
+.media-skeleton {
+  background-color: var(--t-color-border-strong);
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes media-skeleton-pulse {
+    from {
+      opacity: 0.35;
+    }
+    to {
+      opacity: 0.12;
+    }
+  }
+
+  .media-skeleton {
+    animation: media-skeleton-pulse var(--t-duration-slow) var(--t-ease) infinite alternate;
+  }
+}
+
 /* Loading indicator for media that has not arrived yet. */
 /* The ring is always drawn, so there is still an indicator when motion is reduced. */
 .media-spinner {

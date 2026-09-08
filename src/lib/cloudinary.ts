@@ -80,6 +80,18 @@ export function videoPosterUrl(publicId: string, width: number): string {
   return buildUrl("video", ["so_0", "f_auto", "q_auto", `w_${width}`], publicId, "jpg");
 }
 
+// A short, small, silent cut of the video, for a tile that plays in the grid.
+// Six seconds at 480 wide with no audio track is around a tenth of the full
+// clip, which matters when several tiles play at once on mobile data.
+export function videoPreviewUrl(publicId: string): string {
+  return buildUrl(
+    "video",
+    ["so_0", "eo_6", "f_auto", "q_auto:eco", "w_480", "ac_none"],
+    publicId,
+    "mp4",
+  );
+}
+
 // The same frame at a size where it arrives almost immediately, blurred so it
 // reads as a ground rather than as a broken image. A couple of kilobytes, so it
 // paints while the video is still downloading and the hero is never an empty box.

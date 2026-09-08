@@ -9,6 +9,7 @@ import {
   imageUrl,
   isCloudinaryConfigured,
   videoPosterUrl,
+  videoPreviewUrl,
   videoUrl,
 } from "@/lib/cloudinary";
 
@@ -48,6 +49,7 @@ export async function Gallery() {
       full: isVideo ? videoPosterUrl(asset.publicId, FULL_WIDTH) : imageUrl(asset.publicId, FULL_WIDTH),
       videoSrc: isVideo ? videoUrl(asset.publicId, FULL_WIDTH) : null,
       poster: isVideo ? videoPosterUrl(asset.publicId, FULL_WIDTH) : null,
+      previewSrc: isVideo ? videoPreviewUrl(asset.publicId) : null,
       alt: asset.alt ?? asset.title ?? `${isVideo ? "Video" : "Photo"} from ${site.name}`,
       title: asset.title,
       caption: asset.caption,

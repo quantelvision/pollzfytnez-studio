@@ -1,8 +1,10 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { SocialLinks } from "@/components/layout/SocialLinks";
 import { useTheme } from "@/components/theme/ThemeContext";
 import { navLinks } from "@/config/nav";
@@ -15,7 +17,7 @@ import { whatsappLink, whatsappMessages } from "@/lib/whatsapp";
 // which plain CSS cannot do once the node is removed. Focus moves into the
 // panel on open, is trapped while it is open, and returns to the trigger on
 // close, and the page behind is locked from scrolling.
-export function MobileMenu({ onDark }: { onDark: boolean }) {
+export function MobileMenu({ onDark, logoSrc }: { onDark: boolean; logoSrc: string | null }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -94,8 +96,19 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: theme.motion.durationBase / 1000, ease: theme.motion.ease }}
-            className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-surface px-gutter pt-24 pb-10"
+            className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-surface px-gutter pt-5 pb-10"
           >
+            {/* The trigger sits top right, so the brand takes the corner */}
+            {/* opposite it and the sheet reads as the site rather than a list. */}
+            <Link
+              href="/"
+              onClick={close}
+              aria-label={`${site.name}, home`}
+              className="mb-10 self-start rounded-button"
+            >
+              <BrandLogo logoSrc={logoSrc} onDark={false} size="md" />
+            </Link>
+
             <nav aria-label="Sections">
               <ul>
                 {navLinks.map((link) => (
@@ -120,27 +133,13 @@ export function MobileMenu({ onDark }: { onDark: boolean }) {
                 onClick={close}
                 className="inline-flex w-full items-center justify-center rounded-button bg-accent px-5 py-4 type-button text-on-accent"
               >
-                Book Free Trial
+                Book your free trial
               </a>
-
-              <ul className="mt-8">
-                {site.phones.map((phone) => (
-                  <li key={phone.tel}>
-                    <a
-                      href={`tel:${phone.tel}`}
-                      onClick={close}
-                      className="block py-1.5 type-body text-ink-muted"
-                    >
-                      {phone.display}
-                    </a>
-                  </li>
-                ))}
-              </ul>
 
               {/* The row is built for a dark footer, so it is put on ink here */}
               <div
                 data-on-dark=""
-                className="mt-6 rounded-card bg-ink px-5 py-4"
+                className="mt-8 rounded-card bg-ink px-5 py-4"
               >
                 <SocialLinks />
               </div>

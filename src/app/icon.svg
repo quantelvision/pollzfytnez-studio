@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="16" fill="#2E6B46"/>
-  <path d="M32 12.5 L37.2 24.6 L50 26.2 L40.6 35.1 L43.4 48 L32 41.4 L20.6 48 L23.4 35.1 L14 26.2 L26.8 24.6 Z" fill="none" stroke="#FAF9F3" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Carries the active theme's accent and surface. A static file cannot read -->
+  <!-- the theme, so if activeThemeId changes these two values change with it. -->
+  <rect width="64" height="64" rx="16" fill="#C63C0A"/>
+  <path d="M32 12.5 L37.2 24.6 L50 26.2 L40.6 35.1 L43.4 48 L32 41.4 L20.6 48 L23.4 35.1 L14 26.2 L26.8 24.6 Z" fill="none" stroke="#FFF8F2" stroke-width="3.5" stroke-linejoin="round"/>
 </svg>

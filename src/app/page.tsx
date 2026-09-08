@@ -1,25 +1,18 @@
 import { SitePage } from "@/components/SitePage";
 import { getActiveTheme } from "@/config/themes";
-import { buildFaqJsonLd, buildGymJsonLd } from "@/lib/jsonld";
+import { buildSiteJsonLd } from "@/lib/jsonld";
 
 // Rebuilt hourly so media uploaded to Cloudinary appears without a deploy.
 export const revalidate = 3600;
 
 export default function Home() {
-  const gymJsonLd = buildGymJsonLd();
-  const faqJsonLd = buildFaqJsonLd();
-
   return (
     <>
-      {gymJsonLd ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(gymJsonLd) }}
-        />
-      ) : null}
+      {/* One connected graph: the site, the business, both gyms, the trainer */}
+      {/* and the questions, pointing at each other by @id. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildSiteJsonLd()) }}
       />
       <SitePage theme={getActiveTheme()} />
     </>

@@ -8,7 +8,9 @@ export interface HeroClip {
   label: string | null;
 }
 
-// Plays the folder's clips one after another and wraps back to the first.
+// Plays the folder's clips one after another and wraps back to the first, so
+// the reel repeats forever whether the folder holds one video or five. One
+// clip is looped by the browser; several are stepped through here.
 // Autoplay is never set as an attribute: playback starts here only when the
 // visitor has not asked for reduced motion, who instead keeps the poster.
 //
@@ -66,6 +68,11 @@ export function HeroVideoClient({
         fetchPriority="high"
         className={className}
       />
+      {/* A single clip loops natively. Advancing the index cannot loop it: the */}
+      {/* next index is itself, so the state never changes, the key never */}
+      {/* changes, and the video sits frozen on its last frame. With loop set */}
+      {/* the browser seeks back on its own and never fires ended, so the two */}
+      {/* ways of repeating can never both run. */}
       <video
         ref={ref}
         key={clip.src}
@@ -74,6 +81,7 @@ export function HeroVideoClient({
         poster={clip.poster}
         muted
         playsInline
+        loop={clips.length === 1}
         preload="metadata"
         onEnded={() => setIndex((current) => (current + 1) % clips.length)}
         {...(clip.label ? { "aria-label": clip.label } : { "aria-hidden": true })}

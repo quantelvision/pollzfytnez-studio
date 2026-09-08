@@ -33,6 +33,9 @@ export interface Branch {
     postalCode: string;
     country: string;
   } | null;
+  // One sentence for structured data. Says who may train there and what runs,
+  // using only confirmed facts.
+  description: string;
   // Opening hours are per branch: the two do not keep the same week.
   hours: readonly HoursSlot[];
   // Google Maps share link, pending from the client for both branches
@@ -79,6 +82,8 @@ export const site = {
       id: "pollzfytnez-studio",
       name: "Pollzfytnez Studio",
       kind: "women-only",
+      description:
+        "Women only gym in Kolathur, Chennai. Strength training, personal training, fitness and conditioning, body toning, weight loss and weight gain programs, CrossFit and online fitness classes.",
       address: {
         street: "8A, Sivananda Nagar, 100 Feet Road",
         locality: "Kolathur",
@@ -106,6 +111,8 @@ export const site = {
       id: "pollz-unisex-gym",
       name: "Pollz Unisex Gym",
       kind: "unisex",
+      description:
+        "Unisex gym in Kolathur, Chennai, open to everyone. Strength training, personal training, fitness and conditioning, body toning, weight loss and weight gain programs, CrossFit and online fitness classes.",
       address: {
         street: "47, 1st Main Street, Thirumalai Nagar",
         locality: "Kolathur",

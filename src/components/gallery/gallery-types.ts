@@ -11,6 +11,8 @@ export interface GalleryItem {
   // videos only: the file to play, and a poster frame
   videoSrc: string | null;
   poster: string | null;
+  // videos only: a short silent cut that plays in the grid tile
+  previewSrc: string | null;
   alt: string;
   // shown over the media in the lightbox when set in Cloudinary
   title: string | null;

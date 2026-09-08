@@ -63,7 +63,7 @@ export function Header({ logoSrc }: { logoSrc: string | null }) {
           >
             Book Free Trial
           </a>
-          <MobileMenu onDark={transparent} />
+          <MobileMenu onDark={transparent} logoSrc={logoSrc} />
         </div>
       </div>
     </header>

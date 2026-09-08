@@ -39,8 +39,7 @@ export function Hero({ theme }: { theme: Theme }) {
                 </span>
               </h1>
               <p className="mt-6 max-w-xl type-lead text-surface/90">
-                Strength, conditioning and personal coaching on 100 Feet Road, led by a national
-                powerlifting medallist. Doors open at 5 AM.
+                Everyone deserves to feel strong, confident, and proud of their body. We’re here to provide the guidance, support, and motivation you need to become your strongest self.
               </p>
               <div className="hero-rise mt-8">
                 <WhatsAppButton message={whatsappMessages.freeTrial}>
