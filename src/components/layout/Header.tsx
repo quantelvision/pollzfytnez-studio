@@ -10,7 +10,8 @@ import { BrandLogo } from "./BrandLogo";
 import { MobileMenu } from "./MobileMenu";
 
 // Sits transparent over the hero footage and becomes a solid surface bar once
-// the page scrolls, at which point the logo gains its dark plate.
+// the page scrolls. Only the bar itself changes: the logo keeps one size and
+// no plate, so the header never changes height and nothing reflows mid scroll.
 export function Header({ logoSrc }: { logoSrc: string | null }) {
   const theme = useTheme();
   const startsTransparent = theme.hero.navStyle === "transparent";
@@ -36,7 +37,7 @@ export function Header({ logoSrc }: { logoSrc: string | null }) {
     >
       <div className="mx-auto flex max-w-page items-center justify-between gap-6 px-gutter py-3">
         <Link href="/" className="rounded-button" aria-label={`${site.name}, home`}>
-          <BrandLogo logoSrc={logoSrc} onDark={transparent} size={transparent ? "md" : "sm"} />
+          <BrandLogo logoSrc={logoSrc} onDark={transparent} size="md" />
         </Link>
 
         <nav aria-label="Primary" className="hidden lg:block">

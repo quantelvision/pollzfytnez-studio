@@ -1,14 +1,11 @@
 import { site } from "@/config/site";
 
-// The logo draws "POLLZ" as a white outline with no fill, so on a light surface
-// it needs a dark plate behind it. On dark backgrounds it works as-is.
-// This constraint is settled and verified; see docs/business.md.
-//
-// The plate adds its own padding, so a plated logo carries more visual weight
-// at the same image height. Unplated placements are set larger to match.
+// The logo is a solid fill, so it needs no plate behind it and reads on the
+// hero footage and on the page surface alike. onDark only tones the text
+// wordmark, which stands in until a file exists in /public/brand.
 const sizes = {
   sm: "h-9",
-  md: "h-12",
+  md: "h-11",
   lg: "h-14",
 } as const;
 
@@ -32,16 +29,16 @@ export function BrandLogo({
     );
   }
 
-  const plate = onDark ? "" : "rounded-button bg-ink px-4 py-2";
+  // flex, not inline-flex: an inline box sits on the text baseline, so the line
+  // box adds descender space underneath it and the mark rides high in any bar
+  // that centres its contents. w-fit keeps the box on the logo, so the link's
+  // hit area and focus ring do not stretch to the width of whatever holds it.
   return (
-    <span className={["inline-flex items-center", plate, className].filter(Boolean).join(" ")}>
-      {/* plain img: the logo's intrinsic size is unknown until the client supplies the file */}
+    <span className={["flex w-fit items-center", className].filter(Boolean).join(" ")}>
+      {/* plain img: Cloudinary does not serve this one, and next/image would */}
+      {/* re-optimise a file already sized for the largest place it appears */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={logoSrc}
-        alt={site.name}
-        className={`${sizes[size]} w-auto transition-[height] ease-brand`}
-      />
+      <img src={logoSrc} alt={site.name} width={600} height={304} className={`${sizes[size]} w-auto`} />
     </span>
   );
 }
