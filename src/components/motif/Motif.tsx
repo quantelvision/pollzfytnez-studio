@@ -1,6 +1,6 @@
 import type { MotifId } from "@/config/themes/types";
 
-// Hand-drawn marks from the studio's own world: chalk, plates, knurling, tallies.
+// Hand-drawn marks from the gym's own world: chalk, plates, knurling, tallies.
 // Paths are deliberately irregular; do not straighten or center them.
 // Each mark has one sanctioned home, recorded in the theme's motif map.
 

@@ -23,7 +23,7 @@ export function Plans() {
         <p className="reveal type-eyebrow text-accent">Plans</p>
         <h2 className="reveal mt-4 type-h2 text-ink">What it costs</h2>
         <p className="reveal mt-6 type-lead text-ink-muted">
-          One price, paid once a year, for everything the studio runs.
+          One price, paid once a year, for everything the gym runs.
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export function Plans() {
           ))}
           <li className="reveal flex items-center gap-2 type-body text-ink">
             <Check aria-hidden="true" className="size-5 text-accent" />
-            Access to the studio programs listed above
+            Access to every program listed above
           </li>
         </ul>
       </div>

@@ -59,8 +59,8 @@ export function Branches() {
         <p className="reveal type-eyebrow text-accent">Locations</p>
         <h2 className="reveal mt-4 type-h2 text-ink">We have two branches</h2>
         <p className="reveal mt-6 type-lead text-ink-muted">
-          A women-only studio and a unisex gym, both in Kolathur. They do not keep the same hours,
-          so check the one you plan to train at. Pick a branch to see it on the map.
+          One women only and one unisex, both in Kolathur. They do not keep the same hours, so
+          check the one you plan to train at. Pick a branch to see it on the map.
         </p>
       </div>
 
@@ -147,11 +147,6 @@ export function Branches() {
                     )}
                   </div>
 
-                  {branch.geo?.approximate ? (
-                    <p className="mt-4 type-small text-ink-muted">
-                      The pin shows the Kolathur area. Exact location to be confirmed.
-                    </p>
-                  ) : null}
                 </div>
               </li>
             );

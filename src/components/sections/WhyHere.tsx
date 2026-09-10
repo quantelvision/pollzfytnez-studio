@@ -2,7 +2,7 @@ import { Section } from "@/components/ui/Section";
 import { site } from "@/config/site";
 
 // Two tiers rather than a grid of equal boxes: the coaching record is the
-// strongest thing this studio can say, so it is set large and carries a clay
+// strongest thing this gym can say, so it is set large and carries a clay
 // rule, while the other three sit quieter in a narrower column beside it.
 // Deliberately a different shape from the numbered roster in the programs
 // section, so the page does not repeat itself.

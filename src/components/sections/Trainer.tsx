@@ -30,7 +30,7 @@ export async function Trainer() {
 
       <div className="stagger mt-10 lg:col-span-7 lg:mt-0">
         <p className="reveal type-eyebrow text-accent">{trainer.role}</p>
-        <h2 className="reveal mt-4 type-h2 text-ink">Coached by {trainer.name}</h2>
+        <h2 className="reveal mt-4 type-h2 text-ink">Coach {trainer.name}</h2>
         <p className="reveal mt-6 max-w-xl type-lead text-ink-muted">
           She competes in powerlifting at national level and coaches the floor herself, so the
           person correcting your setup has taken the same lifts under a judge.

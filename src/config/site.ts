@@ -2,7 +2,7 @@
 // Sources: the client brief and the screenshot of the previous site, confirmed 2026-08-27.
 
 // A day the branch opens, or a day it is shut. The two branches keep different
-// hours and the studio closes on Sunday, so closure is real data rather than an
+// hours and one branch closes on Sunday, so closure is real data rather than an
 // absence, and nothing may read opens24 or closes24 without checking closed first.
 export type HoursSlot =
   | {
@@ -46,7 +46,11 @@ export interface Branch {
 }
 
 export const site = {
-  name: "Pollz Fytnez Studio",
+  name: "Pollz Fytnez Gym",
+  // The oversized sign off along the bottom of the footer, shortened to the
+  // brand alone on the client's review of 2026-09-10. Decorative, so it is
+  // hidden from screen readers, which already have the full name above it.
+  signOff: "Pollz Fytnez",
   // printed on the logo itself, kept verbatim
   tagline: "Train like a Star",
   // The www host is the canonical one, confirmed 2026-09-08. A trailing slash
@@ -55,7 +59,7 @@ export const site = {
   // double slash and point at URLs that do not match the canonical.
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.pollzfytnezgym.in").replace(/\/+$/, ""),
   description:
-    "Strength training, conditioning and personal coaching at Pollz Fytnez Studio in Kolathur, Chennai. Two branches, both open from 5 AM Monday to Saturday. Message us on WhatsApp for a free trial day.",
+    "Strength training, conditioning and personal coaching at Pollz Fytnez Gym in Kolathur, Chennai. Two branches, both open from 5 AM Monday to Saturday. Message us on WhatsApp for a free trial day.",
 
   phones: [
     { display: "+91 75500 02947", tel: "+917550002947" },
@@ -66,7 +70,7 @@ export const site = {
   // environment, which has to be set separately.
   email: "pollzfytnez@gmail.com" as string | null,
 
-  // The three platforms the studio uses. All confirmed and real as of 2026-09-01.
+  // The three platforms the gym uses. All confirmed and real as of 2026-09-01.
   socials: [
     { id: "whatsapp", label: "WhatsApp", url: "https://wa.me/917550002947" },
     { id: "instagram", label: "Instagram", url: "https://www.instagram.com/pollzfytnez/" },
@@ -76,7 +80,7 @@ export const site = {
       url: "https://www.facebook.com/people/Pollz-Fytnez/61590209579189/",
     },
   ],
-  // the studio's real sales mechanism: every primary call to action goes here
+  // the gym's real sales mechanism: every primary call to action goes here
   whatsappNumber: "917550002947",
 
   // Names, addresses and hours confirmed by the client on 2026-09-01. The two
@@ -161,13 +165,25 @@ export const site = {
 
   // Names as the client words them, set in sentence case per the house style.
   // Descriptions state what the training involves and claim nothing specific
-  // to this studio that has not been confirmed.
+  // to this gym that has not been confirmed.
   programs: [
     {
       id: "strength-training",
       name: "Strength training",
       description:
         "Barbell and dumbbell work with the load stepped up as you get stronger. Squat, press, hinge and pull, coached for form before weight.",
+    },
+    {
+      id: "powerlifting",
+      name: "Powerlifting",
+      description:
+        "The three competition lifts, squat, bench press and deadlift, trained for a heavier single rather than for volume, with a national medallist watching the setup.",
+    },
+    {
+      id: "bodybuilding",
+      name: "Bodybuilding",
+      description:
+        "Training split by muscle group and worked at the repetition ranges that add size, with the load stepped up week to week.",
     },
     {
       id: "personal-training",
@@ -209,7 +225,7 @@ export const site = {
       id: "online-classes",
       name: "Online fitness classes",
       description:
-        "Live sessions you join from home, open to men and women, following the same training the studio runs in person.",
+        "Live sessions you join from home, open to men and women, following the same training the gym runs in person.",
     },
   ],
 
@@ -256,7 +272,7 @@ export const site = {
       // TODO: a launch offer, so it expires. Remove the badge and rename this
       // plan once the first 50 memberships are taken. See docs/business.md.
       badge: "Opening offer, first 50 members",
-      summary: "Full access to the floor and every program the studio runs, for a year.",
+      summary: "Full access to the floor and every program the gym runs, for a year.",
     },
     others: [
       {
@@ -326,7 +342,7 @@ export const site = {
     },
     {
       q: "Is this a women-only gym?",
-      a: "There are two branches: a women-only studio and a unisex gym. Tell us which one suits you and we will point you to it.",
+      a: "There are two branches. Pollzfytnez Studio is women only, and Pollz Unisex Gym is open to everyone. Tell us which one suits you and we will point you to it.",
     },
     {
       q: "Who takes the sessions?",
@@ -334,7 +350,7 @@ export const site = {
     },
     {
       q: "Can I train from home?",
-      a: "Yes. Online fitness classes run for men and women who cannot get to the studio, following the same training done in person.",
+      a: "Yes. Online fitness classes run for men and women who cannot get to the gym, following the same training done in person.",
     },
     {
       q: "What does membership cost?",

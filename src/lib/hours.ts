@@ -85,10 +85,10 @@ export interface OpenState {
   opensIn: number;
 }
 
-// The studio's own timezone, so a visitor abroad still sees Chennai time.
+// The gym's own timezone, so a visitor abroad still sees Chennai time.
 const STUDIO_TIMEZONE = "Asia/Kolkata";
 
-function studioNow(date: Date): { weekday: string; minutes: number } {
+function gymNow(date: Date): { weekday: string; minutes: number } {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: STUDIO_TIMEZONE,
     weekday: "long",
@@ -123,7 +123,7 @@ function nextOpenDay(
 
 // Shared by the server render and the client tick, so the two always agree.
 export function openStateAt(date: Date, schedule: DaySchedule[]): OpenState {
-  const { weekday, minutes } = studioNow(date);
+  const { weekday, minutes } = gymNow(date);
   const index = Math.max(
     schedule.findIndex((day) => day.day === weekday),
     0,

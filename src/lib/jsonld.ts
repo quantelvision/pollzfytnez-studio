@@ -32,7 +32,7 @@ function organization() {
     image: `${site.url}/opengraph-image`,
     telephone: site.phones.map((phone) => phone.tel),
     ...(site.email ? { email: site.email } : {}),
-    // the profiles the studio actually runs, which is how a search engine ties
+    // the profiles the gym actually runs, which is how a search engine ties
     // this record to accounts it already knows
     sameAs: site.socials.map((social) => social.url),
     areaServed: { "@type": "City", name: "Chennai" },
@@ -55,7 +55,7 @@ function gyms() {
         description: branch.description,
         url: `${site.url}/`,
         parentOrganization: { "@id": organizationId() },
-        // both numbers reach the studio; which one belongs to which branch has
+        // both numbers reach the gym; which one belongs to which branch has
         // not been confirmed, so neither is claimed for one
         telephone: site.phones.map((phone) => phone.tel),
         ...(site.email ? { email: site.email } : {}),

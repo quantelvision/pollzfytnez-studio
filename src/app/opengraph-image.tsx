@@ -4,8 +4,8 @@ import { ImageResponse } from "next/og";
 import { site } from "@/config/site";
 import { getActiveTheme } from "@/config/themes";
 
-// Brand-based share image. Replaced with real studio photography once chosen.
-export const alt = "Pollz Fytnez Studio, gym in Kolathur, Chennai";
+// Brand-based share image. Replaced with real photography from the floor once chosen.
+export const alt = `${site.name}, gym in Kolathur, Chennai`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

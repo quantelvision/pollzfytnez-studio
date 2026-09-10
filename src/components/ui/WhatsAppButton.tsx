@@ -4,7 +4,7 @@ import { whatsappLink, whatsappMessages } from "@/lib/whatsapp";
 import { Button } from "./Button";
 
 // The site's one conversion action. Every call to action passes the message it
-// should arrive with, so the studio knows what the enquiry is about.
+// should arrive with, so the gym knows what the enquiry is about.
 export function WhatsAppButton({
   message = whatsappMessages.general,
   children = "Message us on WhatsApp",

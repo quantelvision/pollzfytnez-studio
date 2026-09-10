@@ -32,7 +32,7 @@ function runtime(seconds: number | null): string | null {
   return `${minutes}:${String(total % 60).padStart(2, "0")}`;
 }
 
-// The studio's own photos and clips, newest upload first, so the grid reflects
+// The gym's own photos and clips, newest first, so the grid reflects
 // whatever was added most recently without anyone reordering anything.
 export async function Gallery() {
   const assets = isCloudinaryConfigured() ? await getFolderMedia(site.media.galleryFolder) : [];
@@ -61,7 +61,7 @@ export async function Gallery() {
     <Section id="gallery" className="border-t border-border">
       <div className="stagger max-w-2xl">
         <p className="reveal type-eyebrow text-accent">Gallery</p>
-        <h2 className="reveal mt-4 type-h2 text-ink">Inside the studio</h2>
+        <h2 className="reveal mt-4 type-h2 text-ink">Inside the gym</h2>
         <p className="reveal mt-6 type-lead text-ink-muted">
           The floor, the kit and the people who train on it.
         </p>

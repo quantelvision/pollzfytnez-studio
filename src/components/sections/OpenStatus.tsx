@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { openStateAt, type DaySchedule } from "@/lib/hours";
 
-// Live open or closed badge for one branch, in the studio's own timezone, so a
+// Live open or closed badge for one branch, in the gym's own timezone, so a
 // visitor abroad still sees Chennai time. It renders nothing until after mount:
 // the server has no reliable clock for the viewer, and a guessed value would
 // hydrate wrong.

@@ -4,7 +4,7 @@ import { whatsappLink, whatsappMessages } from "@/lib/whatsapp";
 import { BrandLogo } from "./BrandLogo";
 import { SocialLinks } from "./SocialLinks";
 
-// Three columns of real links, then the studio name set large across the
+// Three columns of real links, then a short sign off set large across the
 // bottom as a sign-off. The wordmark is decorative and clipped by the section,
 // so it is hidden from screen readers, which already have the name above.
 export function Footer({ logoSrc }: { logoSrc: string | null }) {
@@ -101,7 +101,7 @@ export function Footer({ logoSrc }: { logoSrc: string | null }) {
         aria-hidden="true"
         className="footer-wordmark reveal-signoff in-group text-surface/12 select-none"
       >
-        {site.name}
+        {site.signOff}
       </p>
     </footer>
   );
