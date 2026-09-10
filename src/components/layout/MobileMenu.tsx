@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BrandLogo } from "@/components/layout/BrandLogo";
-import { SocialLinks } from "@/components/layout/SocialLinks";
 import { useTheme } from "@/components/theme/ThemeContext";
 import { navLinks } from "@/config/nav";
 import { site } from "@/config/site";
@@ -135,14 +134,6 @@ export function MobileMenu({ onDark, logoSrc }: { onDark: boolean; logoSrc: stri
               >
                 Book your free trial
               </a>
-
-              {/* The row is built for a dark footer, so it is put on ink here */}
-              <div
-                data-on-dark=""
-                className="mt-8 rounded-card bg-ink px-5 py-4"
-              >
-                <SocialLinks />
-              </div>
             </div>
           </m.div>
         ) : null}
