@@ -40,14 +40,16 @@ function WeekPanel({
       <div aria-hidden="true">
         <dl className="stagger sm:hidden">
           {slots.map((slot) => (
+            // Stacked rather than label and time on one line. Sharing a line
+            // left the time about 190px on a phone, and "5:00 AM to 10:00 PM"
+            // needs a little over 200, so it broke after "10:00" and left "PM"
+            // alone on the next line. Given the full width it fits in one.
             <div
               key={slot.label}
-              className="reveal flex items-baseline justify-between gap-4 border-t border-border-strong py-4 last:border-b"
+              className="hours-row border-t border-border-strong py-4 last:border-b"
             >
               <dt className="type-body text-ink-muted">{slot.label}</dt>
-              <dd
-                className={`text-right type-h3 ${slot.closed ? "text-ink-muted" : "text-ink"}`}
-              >
+              <dd className={`mt-1 type-h3 ${slot.closed ? "text-ink-muted" : "text-ink"}`}>
                 {slot.closed ? "Closed" : `${slot.opens} to ${slot.closes}`}
               </dd>
             </div>

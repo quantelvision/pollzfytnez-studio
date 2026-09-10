@@ -41,12 +41,34 @@ export function BranchTabs({ tabs }: { tabs: BranchTab[] }) {
 
   return (
     <div>
+      {/* A segmented control: equal columns at every width, so two long branch */}
+      {/* names can never wrap the control onto a second row the way a flex-wrap */}
+      {/* row did on a phone. The grid is built from the number of branches */}
+      {/* rather than hard coded to two. */}
       <div
         role="tablist"
         aria-label="Opening hours by branch"
         onKeyDown={onKeyDown}
-        className="flex flex-wrap gap-2 rounded-button bg-surface-raised p-1.5 sm:inline-flex"
+        className="relative grid rounded-button bg-surface-raised p-1.5 sm:max-w-lg"
+        style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
       >
+        {/* The selected fill is one element that slides, rather than a */}
+        {/* background switching off one button and on to another. That is what */}
+        {/* makes the change read as a movement instead of a flicker. It sits */}
+        {/* under the labels, so it is hidden and the buttons carry the state. */}
+        <span
+          aria-hidden="true"
+          className="branch-tab-indicator absolute inset-y-1.5 left-1.5 rounded-button bg-accent"
+          style={{
+            // The control's own padding is p-1.5, which is one and a half
+            // spacing units a side and so three across. Subtracting it is what
+            // makes the fill exactly one segment wide, which in turn makes a
+            // translate of 100 percent land it exactly on the next one.
+            width: `calc((100% - (var(--t-spacing-unit) * 3)) / ${tabs.length})`,
+            transform: `translateX(${active * 100}%)`,
+          }}
+        />
+
         {tabs.map((tab, index) => {
           const selected = index === active;
           return (
@@ -62,10 +84,8 @@ export function BranchTabs({ tabs }: { tabs: BranchTab[] }) {
               aria-controls={`${base}-panel-${tab.id}`}
               tabIndex={selected ? 0 : -1}
               onClick={() => setActive(index)}
-              className={`grow cursor-pointer rounded-button px-5 py-2.5 type-button transition-[background-color,color] ease-brand sm:grow-0 ${
-                selected
-                  ? "bg-accent text-on-accent"
-                  : "text-ink-muted hover:bg-accent-tint hover:text-accent"
+              className={`relative z-10 cursor-pointer rounded-button px-3 py-2.5 text-center type-button transition-colors ease-brand sm:px-5 ${
+                selected ? "text-on-accent" : "text-ink-muted hover:text-accent"
               }`}
             >
               {tab.label}
@@ -83,7 +103,7 @@ export function BranchTabs({ tabs }: { tabs: BranchTab[] }) {
         id={`${base}-panel-${tabs[active].id}`}
         aria-labelledby={`${base}-tab-${tabs[active].id}`}
         tabIndex={0}
-        className="mt-10"
+        className="panel-swap mt-10"
       >
         {tabs[active].panel}
       </div>

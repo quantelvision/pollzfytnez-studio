@@ -95,6 +95,53 @@
     animation-delay: calc(var(--i, 0) * var(--t-duration-fast) / 2);
   }
 
+  @keyframes hours-row-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* The grouped hours a phone gets instead of the chart. Time based for the */
+  /* same reason the bars above are: these rows live in a tab panel, and a */
+  /* view() timeline resolves against where the element sits rather than */
+  /* against having been mounted. Switching branch remounted a row that was */
+  /* part way through its entry window, so it settled at partial opacity and */
+  /* stayed there until the page was scrolled again. That was the flicker. */
+  .hours-row {
+    animation: hours-row-in var(--t-duration-base) var(--t-ease) both;
+    animation-delay: calc(var(--i, 0) * var(--t-duration-fast) / 2);
+  }
+
+  /* The branch switcher. The selected fill slides between segments, and the */
+  /* panel it controls arrives rather than appearing, so picking a branch reads */
+  /* as one movement. Both sit inside the reduced motion guard, so a visitor who */
+  /* asks for less gets the same switch instantly and never a half drawn one. */
+  .branch-tab-indicator {
+    transition: transform var(--t-duration-base) var(--t-ease);
+  }
+
+  @keyframes panel-swap {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Runs on mount. The panel is keyed by branch, so React replaces the element */
+  /* on every switch and the animation replays without anything to reset. */
+  .panel-swap {
+    animation: panel-swap var(--t-duration-base) var(--t-ease) both;
+  }
+
   @keyframes answer-in {
     from {
       opacity: 0;
@@ -217,13 +264,16 @@
       animation-timing-function: var(--t-ease);
       animation-fill-mode: both;
       animation-timeline: view();
-      /* Absolute offsets, not percentages. A percentage of the entry phase */
-      /* resolves against the element's own height, so a one line heading would */
-      /* animate over about thirty pixels of scroll and snap, while a tall block */
-      /* crawled. A fixed distance gives everything the same reveal, and every */
-      /* window still closes well inside a phone viewport, so nothing is left */
-      /* stranded part way through. */
-      animation-range: entry calc(var(--i, 0) * 40px) entry calc(280px + var(--i, 0) * 40px);
+      /* Measured against the viewport, not the element and not a fixed pixel */
+      /* count. A percentage of the entry phase resolves against the element's */
+      /* own height, so a one line heading would animate over about thirty */
+      /* pixels of scroll and snap. A fixed pixel distance scales with nothing, */
+      /* and 280px finished about a third of the way up a laptop screen, which */
+      /* is below the middle: the arrival was over before it was being looked */
+      /* at. In vh the window holds its shape on any screen. Entry starts as the */
+      /* top edge crosses the bottom of the viewport, so 55vh lands the finish */
+      /* just past the middle, with the whole run in view on the way there. */
+      animation-range: entry calc(var(--i, 0) * 4vh) entry calc(55vh + var(--i, 0) * 4vh);
     }
 
     .reveal {
@@ -265,7 +315,7 @@
     /* after the track reaches it, the price after its card. Must stay after the */
     /* shared block, which also sets animation-range. */
     .reveal-late {
-      animation-range: entry calc(110px + var(--i, 0) * 40px) entry calc(390px + var(--i, 0) * 40px);
+      animation-range: entry calc(18vh + var(--i, 0) * 4vh) entry calc(73vh + var(--i, 0) * 4vh);
     }
 
     /* Position in a group, so a set of siblings arrives in order rather than */
