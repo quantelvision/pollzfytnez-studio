@@ -21,10 +21,15 @@ export interface CloudinaryAsset {
   // are documented in docs/media.md; description is accepted as a caption alias.
   title: string | null;
   caption: string | null;
-  // When the photo was taken, from EXIF, and when it was uploaded. The gallery
-  // orders by the first and falls back to the second. See docs/media.md: an
-  // asset that has been through WhatsApp carries no EXIF at all.
+  // When the photo was taken and when it was uploaded. The gallery orders by
+  // capture time, falls back to the date in a WhatsApp filename, and falls back
+  // again to the upload time. See docs/media.md: an asset that has been through
+  // WhatsApp carries no EXIF at all, which is why the filename is read.
   capturedAt: number | null;
+  // The date stamped into a WhatsApp filename, with its daily counter, so two
+  // files from the same day still have an order. null when the name does not
+  // match the pattern.
+  namedAt: number | null;
   uploadedAt: number;
 }
 
@@ -143,6 +148,31 @@ function exifToTimestamp(value: string | undefined): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
+// WhatsApp names what it saves "IMG-20260827-WA0024" or "VID-20260825-WA0024",
+// and it does that after stripping the EXIF that would have carried the real
+// capture time, so for this library the name is the only date left on the file.
+// The trailing counter is that day's sequence, so it orders same-day files
+// against each other. Cloudinary may prefix a folder and may append its own
+// suffix to a duplicate name, so the pattern is matched anywhere in the id
+// rather than anchored to it.
+const WHATSAPP_NAME = /(?:IMG|VID)[-_]?(\d{4})(\d{2})(\d{2})(?:[-_]?WA(\d{4}))?/i;
+
+function filenameToTimestamp(publicId: string): number | null {
+  const match = publicId.match(WHATSAPP_NAME);
+  if (!match) {
+    return null;
+  }
+  const [, year, month, day, counter] = match;
+  // Midday Chennai time, so a timezone is never what decides a day boundary.
+  const parsed = Date.parse(`${year}-${month}-${day}T12:00:00+05:30`);
+  if (Number.isNaN(parsed)) {
+    return null;
+  }
+  // The counter is added as seconds, which keeps a day's files in the order
+  // they were saved without ever reaching into the next day.
+  return parsed + Number(counter ?? 0) * 1000;
+}
+
 function toAsset(resource: SearchResource): CloudinaryAsset {
   const custom = resource.context?.custom ?? resource.context ?? {};
   return {
@@ -157,6 +187,7 @@ function toAsset(resource: SearchResource): CloudinaryAsset {
     capturedAt: exifToTimestamp(
       resource.image_metadata?.DateTimeOriginal ?? resource.image_metadata?.CreateDate,
     ),
+    namedAt: filenameToTimestamp(resource.public_id),
     uploadedAt: resource.created_at ? Date.parse(resource.created_at) : 0,
   };
 }
@@ -210,19 +241,24 @@ async function search(expression: string, max: number, sortBy: object[]): Promis
   }
 }
 
+// When an asset was taken, in descending order of how much the source is
+// trusted: EXIF is the camera's own clock, the filename is what WhatsApp
+// stamped on it after throwing that clock away, and the upload time is only
+// when it happened to reach Cloudinary.
+function takenAt(asset: CloudinaryAsset): number {
+  return asset.capturedAt ?? asset.namedAt ?? asset.uploadedAt;
+}
+
 // Everything in a folder, images and video together, most recently taken first.
-// The search API cannot sort on an EXIF field, so the order is applied here
-// after fetching. Anything without a capture time, which is every video and any
-// image stripped of its metadata, falls back to when it was uploaded.
+// The search API cannot sort on an EXIF field or on part of a name, so the
+// order is applied here after fetching.
 export async function getFolderMedia(folder: string, max = 100): Promise<CloudinaryAsset[]> {
   const assets = await search(
     `(resource_type:image OR resource_type:video) AND (folder="${folder}" OR asset_folder="${folder}")`,
     max,
     [{ created_at: "desc" }],
   );
-  return [...assets].sort(
-    (a, b) => (b.capturedAt ?? b.uploadedAt) - (a.capturedAt ?? a.uploadedAt),
-  );
+  return [...assets].sort((a, b) => takenAt(b) - takenAt(a));
 }
 
 // Lists one resource type in a folder, ordered by public id so the choice is
