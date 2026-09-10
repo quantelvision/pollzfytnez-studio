@@ -1,5 +1,6 @@
 "use client";
 
+import { Send } from "lucide-react";
 import { useActionState, useId, useState } from "react";
 import { submitEnquiry } from "@/app/actions/contact";
 import { initialContactState, type ContactState } from "@/app/actions/contact-state";
@@ -84,7 +85,7 @@ export function Contact() {
           <div className="grid gap-5 sm:grid-cols-2">
             {field("name", "Your name", "text", "name")}
             {field("phone", "Phone number", "tel", "tel")}
-            {field("email", "Email address", "email", "email")}
+            {field("email", "Email address (optional)", "email", "email")}
 
             <div>
               <span id={`${id}-program-label`} className="block type-small text-ink">
@@ -138,8 +139,10 @@ export function Contact() {
             <button
               type="submit"
               disabled={pending}
-              className="btn-ring inline-flex items-center justify-center rounded-button bg-accent px-6 py-3 type-button text-on-accent transition-[background-color,box-shadow,transform] ease-brand hover:bg-accent-hover active:scale-(--t-press-scale) disabled:bg-border-strong"
+              className="btn-ring inline-flex items-center justify-center gap-2 rounded-button bg-accent px-6 py-3 type-button text-on-accent transition-[background-color,box-shadow,transform] ease-brand hover:bg-accent-hover active:scale-(--t-press-scale) disabled:bg-border-strong"
             >
+              {/* the glyph repeats the label, so it is hidden from screen readers */}
+              <Send aria-hidden="true" className="size-5" />
               {pending ? "Sending" : "Send enquiry"}
             </button>
           </div>

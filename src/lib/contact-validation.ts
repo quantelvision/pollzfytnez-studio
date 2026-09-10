@@ -22,15 +22,20 @@ export function validateEnquiry(fields: EnquiryFields): Record<string, string> {
     errors.phone = "Enter a 10 digit Indian mobile number.";
   }
 
-  if (!fields.email.trim()) {
-    errors.email = "Please add an email address.";
-  } else if (!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(fields.email.trim())) {
+  // Optional: a phone number is enough to answer an enquiry, and asking for an
+  // email as well loses people. It is still checked when one is given, so a
+  // typo does not silently make the reply-to address undeliverable.
+  const email = fields.email.trim();
+  if (email && !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email)) {
     errors.email = "That email address does not look right.";
   }
 
+  // Whatever someone writes is what they wanted to say, so there is no minimum
+  // and no format. The upper bound is only there to keep a paste out of the
+  // inbox, not to tell anyone how to word a question.
   const message = fields.message.trim();
-  if (message.length < 10) {
-    errors.message = "Tell us a little more, at least ten characters.";
+  if (!message) {
+    errors.message = "Tell us what you would like to know.";
   } else if (message.length > 1000) {
     errors.message = "Please keep this under 1000 characters.";
   }
