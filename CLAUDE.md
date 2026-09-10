@@ -9,6 +9,7 @@ The project's knowledge lives in /docs. Read the relevant file before working:
 - docs/theming.md: how the theme system works, adding a variation, the /preview/[themeId] route.
 - docs/coding-standards.md: hard rules, including no raw colours/fonts/radii/durations outside the theme (build-enforced), character and copy rules, icon rules.
 - docs/media.md: Cloudinary setup, naming, metadata caption fields, video rules.
+- docs/contact.md: the contact form. Resend delivery, moving off the test sender, the enquiry email, rate limiting, validation.
 - docs/decisions.md: the running decision log and proposed next-pass IA. Update it when a decision is made.
 - docs/git.md: commit message conventions. No Co-Authored-By or tool credit trailers, ever.
 
