@@ -11,8 +11,17 @@ const allowedPrefixes = [
   join("src", "config", "themes"),
   join("src", "fonts"),
 ];
-// The OG image renderer draws a static asset through satori, not site UI
-const allowedFiles = [join("src", "app", "opengraph-image.tsx")];
+// Two files render something that is not the site, in a renderer that cannot
+// resolve a CSS custom property, so each has to name a font outright.
+// Both still take every colour from the active theme, which is the part of the
+// rule that actually matters, and neither is an excuse to hard code a palette.
+//   opengraph-image.tsx: draws a share image through satori.
+//   lib/mail.ts: builds the enquiry email. A mail client has no access to the
+//   site's variables or its self hosted faces, so the stack is a literal.
+const allowedFiles = [
+  join("src", "app", "opengraph-image.tsx"),
+  join("src", "lib", "mail.ts"),
+];
 
 const extensions = [".ts", ".tsx", ".css", ".mjs"];
 
