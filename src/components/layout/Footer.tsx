@@ -8,7 +8,10 @@ import { SocialLinks } from "./SocialLinks";
 // bottom as a sign-off. The wordmark is decorative and clipped by the section,
 // so it is hidden from screen readers, which already have the name above.
 export function Footer({ logoSrc }: { logoSrc: string | null }) {
-  const branch = site.branches.find((entry) => entry.address !== null);
+  // The unisex gym is the address the footer carries, confirmed 2026-09-11.
+  // Named by kind rather than taken as whichever branch happens to have an
+  // address first, so adding a branch cannot quietly move the contact block.
+  const branch = site.branches.find((entry) => entry.kind === "unisex" && entry.address !== null);
 
   return (
     // The footer clips the oversized sign off, which makes it a scroll
@@ -48,7 +51,8 @@ export function Footer({ logoSrc }: { logoSrc: string | null }) {
                   <address className="type-body text-surface/70 not-italic">
                     {branch.address.street},
                     <br />
-                    {branch.address.locality}, {branch.address.city} {branch.address.postalCode}
+                    {branch.address.locality}, {branch.address.city}, {branch.address.region}{" "}
+                    {branch.address.postalCode}
                   </address>
                 </li>
               ) : null}

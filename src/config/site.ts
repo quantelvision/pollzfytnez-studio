@@ -122,7 +122,7 @@ export const site = {
       description:
         "Unisex gym in Kolathur, Chennai, open to everyone. Strength training, personal training, fitness and conditioning, body toning, weight loss and weight gain programs, CrossFit and online fitness classes.",
       address: {
-        street: "47, 1st Main Street, Thirumalai Nagar",
+        street: "3rd floor, 47, 1st Main Rd, Thirumalai Nagar",
         locality: "Kolathur",
         city: "Chennai",
         region: "Tamil Nadu",
